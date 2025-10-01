@@ -1,24 +1,31 @@
-local ESX = exports["kk-core"]:getSharedObject()
 local ox_inventory = exports.ox_inventory
+
+local function Trim(value)
+    if not value then return nil end
+    return (value:gsub("^%s*(.-)%s*$", "%1"))
+end
 
 local function getPlate(vehicle)
     if DoesEntityExist(vehicle) then
         local plate = Entity(vehicle).state.plate or GetVehicleNumberPlateText(vehicle)
-        return ESX.Math.Trim(plate)
+        return Trim(plate)
     end
+
     return nil
 end
+
 
 exports('getPlate', getPlate)
 
 local function isVehicleOwned(plate)
-    local result = MySQL.scalar.await('SELECT plate FROM owned_vehicles WHERE plate = ?', { plate })
+    local result = MySQL.scalar.await('SELECT plate FROM user_vehicles WHERE plate = ?', { plate })
     return result
 end
 
 lib.callback.register('kk-vehicles:isPlayerOwned', function(_, plate)
     return isVehicleOwned(plate)
 end)
+
 
 local function getEntityFromNetId(netId)
     local entity = netId and NetworkGetEntityFromNetworkId(netId) or 0
@@ -74,6 +81,7 @@ RegisterNetEvent('kk-vehicles:server:toggleLock', function(netId)
         local state = Entity(vehicle).state
 
         local vehiclelock = state?.vehicleLock?.lock or 1
+
         local newLock = vehiclelock < 2 and 2 or 1
 
         if newLock == vehiclelock then
@@ -95,24 +103,25 @@ RegisterNetEvent('kk-vehicles:server:toggleLights', function(netId)
     end
 end)
 
-RegisterNetEvent('kk-vehicles:server:lockpickDoor', function(netId, slot, item, degrade)
+
+RegisterNetEvent('kk-vehicles:server:lockpickDoor', function(netId, slot, item)
     local src = source
     local vehicle = getEntityFromNetId(netId)
+    if not vehicle then
+        return
+    end
 
-    local slotItem = vehicle and slot and ox_inventory:GetSlot(src, slot)
-    if not slotItem or slotItem.name ~= item then return end
+    -- Kontrolli inventory
+    local slotItem = slot and ox_inventory:GetSlot(src, slot)
+    if not slotItem or slotItem.name ~= item then
+        return
+    end
 
     local success = lib.callback.await('kk-vehicles:client:lockPickCar', src, netId, item)
 
     if success then
         local state = Entity(vehicle).state
-
-        if state?.vehicleLock == 1 then
-            state:set('vehicleLock', false, true)
-        end
-
-        state:set('vehicleLock', {
-            lock = 1,
-        }, true)
+        state:set('vehicleLock', { lock = 0 }, true)
+    else
     end
 end)

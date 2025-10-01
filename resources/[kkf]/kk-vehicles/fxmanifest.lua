@@ -3,7 +3,8 @@ game 'gta5'
 
 shared_scripts {
 	'@ox_lib/init.lua',
-	'shared/*.lua'
+	'shared/*.lua',
+	'@kk-core/imports.lua'
 }
 
 server_scripts {

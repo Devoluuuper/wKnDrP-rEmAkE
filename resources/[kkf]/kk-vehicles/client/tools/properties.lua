@@ -86,15 +86,15 @@ function getVehicleProperties(vehicle)
             doorsBroken = doorsBroken,
             windowsBroken = windowsBroken,
             tyreBurst = tyreBurst,
-            plate = getPlate(vehicle),
+            plate = ESX.Functions.GetPlate(vehicle),
             plateIndex = GetVehicleNumberPlateTextIndex(vehicle),
 
-            bodyHealth = QBCore.Shared.Round(GetVehicleBodyHealth(vehicle), 1),
-            engineHealth = QBCore.Shared.Round(GetVehicleEngineHealth(vehicle), 1),
-            tankHealth = QBCore.Shared.Round(GetVehiclePetrolTankHealth(vehicle), 1),
+            bodyHealth = ESX.Math.Round(GetVehicleBodyHealth(vehicle), 1),
+            engineHealth = ESX.Math.Round(GetVehicleEngineHealth(vehicle), 1),
+            tankHealth = ESX.Math.Round(GetVehiclePetrolTankHealth(vehicle), 1),
 
             fuelLevel = GetVehicleFuelLevel(vehicle) or 0,
-            dirtLevel = QBCore.Shared.Round(GetVehicleDirtLevel(vehicle), 1),
+            dirtLevel = ESX.Math.Round(GetVehicleDirtLevel(vehicle), 1),
             color1 = colorPrimary,
             color2 = colorSecondary,
             customPrimaryColor = customPrimaryColor,
@@ -169,7 +169,7 @@ function getVehicleProperties(vehicle)
             modLightbar = GetVehicleMod(vehicle, 49),
 
             waxTime = Entity(vehicle).state.wax or 0,
-            keyInside = Entity(vehicle).state.keyInside --  -- kui ei taha neid funktioone kasutada, mis selles files on, siis see tuleb sul qb-core-sse lisada. https://i.gyazo.com/16d2ea952d9017241ac5e91c09cb76db.png koha alla.
+            keyInside = Entity(vehicle).state.keyInside
         }
     else
         return
@@ -444,10 +444,10 @@ function setVehicleProperties(vehicle, props)
             Entity(vehicle).state.wax = props.waxTime
         end
 
-        if props.keyInside then -- kui ei taha neid funktioone kasutada, mis selles files on, siis see tuleb sul qb-core-sse lisada. https://i.gyazo.com/eb2b7f4908fb663332a7356dc7d39bd6.png koha alla.
+        if props.keyInside then
             Entity(vehicle).state:set('keyInside', true, true)
         end
     end
 end
 
-exports('setVehicleProperties', setVehicleProperties) -- exports['kk-vehicles']:setVehicleProperties()
+exports('setVehicleProperties', setVehicleProperties)
