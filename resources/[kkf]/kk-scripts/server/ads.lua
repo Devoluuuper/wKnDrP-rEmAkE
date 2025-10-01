@@ -1,0 +1,38 @@
+lib.callback.register('kk-ads:postAdd', function(source, type, message)
+    local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
+    local returnable = nil
+
+    if xPlayer then
+        if type == 'personal' then
+            if xPlayer.getMoney() > 2500 then
+                xPlayer.removeAccountMoney('money', 2500)
+                exports['kk-scripts']:sendLog(xPlayer.identifier, 'MUU', 'Teostas tegevuse /reklaam ' .. message .. '.')
+                TriggerClientEvent("chatMessage", -1, 'REKLAAM', 6, message)
+                returnable = true
+            else
+                returnable = false
+            end
+        elseif type == 'job' then
+            if xPlayer.job.onDuty and xPlayer.job.name ~= 'unemployed' then
+                TriggerEvent('Society.GetMoney', xPlayer.job.name, function(money)
+                    if money >= 2500 then
+                        TriggerEvent('Society.RemoveMoney', xPlayer.job.name, 2500)
+                        exports['kk-scripts']:sendSocietyLog(xPlayer.source, 'FRAKTSIOONI TEADE', 'HIND: $2500')
+                        exports['kk-scripts']:sendLog(xPlayer.identifier, 'MUU', 'Teostas tegevuse /jobad ' .. message .. '.')
+                        TriggerClientEvent("chatMessage", -1, string.upper(xPlayer.job.label), 6,  message)
+                        returnable = true
+                    else
+                        returnable = false
+                    end
+                end)
+            else
+                returnable = false
+            end
+        end
+    else
+        returnable = false
+    end
+
+    while returnable == nil do Wait(50) end; return returnable
+end)

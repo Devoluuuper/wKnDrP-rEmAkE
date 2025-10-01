@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KK Crafting</title>
+
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen hidden">
+    <div class="flex justify-between px-32 py-5 h-full">
+        <div id="itemList" class="h-full overflow-y-auto overflow-x-hidden"></div>
+
+        <div id="secondContainer" class="h-full hidden">
+            <div class="bg-zinc-800 border border-zinc-700 w-96 p-2 text-zinc-300 rounded shadow h-2/4">
+                <h1 id="itemName" class="text-center uppercase font-medium">Trell</h1>
+
+                <div class="flex justify-between">
+                    <img id="secondContaImg" class="h-20" src="https://github.com/darkosiel/jim-mining/blob/main/images/handdrill.png?raw=true">
+
+                    <div>
+                        <div class="rounded shadow bg-zinc-900 border border-zinc-700 py-1 px-1 flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mt-auto mb-auto">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            
+                            <div id="timeToDo" class="ml-1 mt-auto mb-auto">10:00</div>
+                        </div>
+
+                        <div id="levelContainer" class="hidden rounded shadow bg-zinc-900 border border-zinc-700 py-1 px-1 flex mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mt-auto mb-auto">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z" />
+                            </svg>
+                            
+                            <div id="lvlRequired" class="ml-1 mt-auto mb-auto">1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="text-center uppercase font-medium">Vajalikud esemed</h1>
+
+                <div id="itemsNeeded" class="grid gap-1 grid-cols-2 overflow-x-hidden overflow-y-auto"></div>
+
+                <div class="w-full flex gap-1">
+                    <button id="buildItem" class="bg-green-700 hover:bg-green-800 h-9 text-white rounded shadow w-3/4 text-zinc-300 mt-1">
+                        Ehita
+                    </button>
+
+                    <input id="itemCount" value="1" placeholder="(tk)" min="1" max="99" class="rounded shadow bg-zinc-900 border border-zinc-700 py-1 px-1 w-1/4">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

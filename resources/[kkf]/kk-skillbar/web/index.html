@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <title>KKasutaja Skillbar</title>
+</head>
+
+<body>
+    <div class="w-screen h-screen flex relative items-center justify-center">
+        <div id="task_container" class="hidden text-white w-[15%] h-8 fixed mx-auto bottom-20 inset-x-0">
+            <div id="task_labels" class="w-full flex justify-between items-center mb-1 text-sm">
+                <span class="leading-relaxed relative text-white z-10 font-[550]">Vajuta</span>
+                <span id="task_key" class="leading-relaxed relative text-white z-10 font-normal">100%</span>
+            </div>
+
+            <div class="w-full h-full overflow-hidden relative block whitespace-nowrap border rounded-sm border-solid border-zinc-800" style="background: linear-gradient(to right, transparent,#27272A, transparent)">
+                <div id="timeline" class="w-full h-2 overflow-hidden mt-[11px]" style="background: rgb(24, 24, 27, 0.6);">
+                    <div id="task_square" class="absolute h-2 bg-gradient-to-br from-sky-400 to-sky-600 w-1/12"></div>
+                    <div id="task_slot" class="absolute h-2 bg-gradient-to-br from-sky-400 to-sky-600 w-1/12"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script type='text/javascript' src='https://cdn.jsdelivr.net/jquery.marquee/1.4.0/jquery.marquee.min.js'></script>
+    <script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <title>KKasutaja Factions</title>
+
+    <style>
+        select:focus, textarea:focus, input:focus{
+            outline: none;
+        }
+
+        #indeterminate {
+            display: none;
+            position: absolute;
+            height: 5px;
+            background: #0284C7;
+            animation: first 1.5s infinite ease-out;
+        }
+
+        #eas-header {
+            margin-left: 30px;
+            white-space: nowrap;
+        }
+
+        #eas-content {
+            font-size: 1.0vw;
+            margin-left: 30px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        @keyframes first {
+            0% {
+                left: 0%;
+                width: 0%;
+            }
+            100% {
+                left: 0%;
+                width: 100%;
+            }
+        }
+
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #3F3F46;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #1e1e1f ;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #141414;
+        }
+
+        iframe {
+            border: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-eas" class="text-white text-xl absolute flex flex-row items-center w-full h-20 bg-zinc-800 opacity-0 border-zinc-700 border-y-2 left-0 top-0;">
+        <div id="eas-header" class="whitespace-nowrap ml-5">
+            FRAKTSIOON:
+        </div>
+
+        <div id="eas-content" class="text-xs whitespace-nowrap overflow-hidden ml-5"></div>
+    </div>
+
+    <div id="body" class="absolute hidden w-full h-full">
+        <div 
+            id="container" 
+            x-data="{activePage: 'none'}"
+            style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+        >
+            <div id="hovering" class="absolute h-12 w-full -mt-10"></div>
+
+            <div id="indeterminate"></div>
+
+            <div 
+                class="h-full flex overflow-hidden bg-zinc-100"
+                @message.window="
+                    if ($event.data.action == 'setPage') {
+                        activePage = $event.data.page;
+                    }
+                "
+            >
+                <div class="hidden md:flex md:flex-shrink-0">
+                    <div class="flex flex-col w-64">
+                        <div class="flex flex-col h-0 flex-1 bg-zinc-800 text-zinc-200 border-zinc-700 border-r">
+                            <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+                                <div x-data="{changeJob: false}" class="ml-auto mr-auto mb-1">
+                                    <h4 class="text-white font-bold text-2xl mb-1">Fraktsioonihaldus</h4>
+                                        
+                                    <div class="text-xs w-full py-2 py-1 bg-zinc-900 text-zinc-300 border border-zinc-700 rounded shadow text-center">
+                                        <h1 id="factionName" class="ml-1">Puudub - Puudub</h1>
+                                    </div>
+                                </div>
+
+                                <nav class="flex-1 px-2 bg-zinc-800 space-y-1 border-zinc-700 border-t">
+                                    <a id="taxi_info" @click="activePage = 'taxi_info'; functions.loadAll(false)" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                        </svg>
+                                                                
+                                        Statistika
+                                    </a>
+
+                                    <!--<a id="gang_info" @click="activePage = 'gang_info'; functions.loadAll(false)" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                        </svg>
+                                                                
+                                        Jõugu info
+                                    </a>
+
+                                    <a id="racers_info" @click="activePage = 'racers_info'; functions.loadAll(false)" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                        </svg>
+                                                                
+                                        Grupeeringu info
+                                    </a>-->
+
+                                    <a @click="activePage = 'my_factions'; functions.loadAll()" class="text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+                                        </svg>
+                                                                
+                                        Minu fraktsioonid
+                                    </a>
+
+                                    <a id="grades" @click="activePage = 'grades'; functions.loadRanks()" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                        </svg>
+                                                                    
+                                        Auastmed
+                                    </a>
+
+                                    <a id="members" @click="activePage = 'members'; functions.loadMembers()" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                        </svg>
+                                        
+                                        Liikmed
+                                    </a>
+
+                                    <a id="buyable_vehicles" @click="activePage = 'buyable_vehicles'; functions.loadBuyableVehicles()" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                                        </svg>
+                                        
+                                        Tellitavad sõidukid
+                                    </a>
+
+                                    <a id="owned_vehicles" @click="activePage = 'owned_vehicles'; functions.loadVehicles()" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                        </svg>
+                                        
+                                        Omatud sõidukid
+                                    </a>
+
+                                    <a id="logs" @click="activePage = 'logs'" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                        </svg>
+                                        
+                                        Logid
+                                    </a>
+
+                                    <a id="intranet" @click="activePage = 'intranet'" class="hidden text-zinc-300 hover:bg-zinc-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded text-white">
+                                        <svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                                        </svg>
+                                        
+                                        Siseveeb
+                                    </a>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="bg-zinc-800 text-zinc-200 flex flex-col w-0 flex-1 overflow-hidden relative z-0 overflow-y-auto focus:outline-none py-6 px-4">  
+                    <div 
+                        x-show="activePage == 'taxi_info'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Fraktsiooni info</h1>
+                        </div>
+
+                        <div class="mb-1">
+                            <div class="flex gap-1 w-full p-2 bg-zinc-900 rounded shadow mb-1">
+                                <p class="mt-auto mb-auto text-white font-semibold text-xl">Minu lõpetatud tööd: <span id="total_done_taxi">0</span></p>
+                            </div>
+                        </div>
+
+                        <div class="shadow overflow-hidden rounded mb-1">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Liige
+                                        </th>
+                                        
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Lõpetatud tööotsi
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="taxiRatings" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!--<div 
+                        x-show="activePage == 'gang_info'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Jõugu info</h1>
+                        </div>
+
+                        <div class="mb-1">
+                            <div class="flex gap-1 w-full p-2 bg-zinc-900 rounded shadow mb-1">
+                                <p class="mt-auto mb-auto text-white font-semibold text-xl">Reputatsioon: <span id="total_reputation">0</span></p>
+                                <button id="startRivalry" class="mt-auto mb-auto text-white w-64 text-center rounded py-1.5 px-2 bg-sky-700 hover:bg-sky-800">Alusta rivaalitsemist</button>
+                            </div>
+
+                            <div class="flex gap-1 w-full p-2 bg-zinc-900 rounded shadow mb-1">
+                                <p class="mt-auto mb-auto text-white font-semibold text-xl">Teil on kokku <span id="total_crypto">0</span> EQ-t.</p>
+                            </div>
+                        </div>
+
+                        <div class="shadow overflow-hidden rounded">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Rajoon
+                                        </th>
+                                        
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Reputatsioon
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gangTerritories" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div 
+                        x-show="activePage == 'racers_info'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Grupeeringu info</h1>
+                        </div>
+
+                        <div class="mb-1">
+                            <div class="flex gap-1 w-full p-2 bg-zinc-900 rounded shadow mb-1">
+                                <p class="mt-auto mb-auto text-white font-semibold text-xl">Grupeeringu ELO: <span id="total_own_elo">0</span></p>
+
+                            </div>
+                        </div>
+
+                        <div class="shadow overflow-hidden rounded mb-1">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Liige
+                                        </th>
+                                        
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            ELO
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="racersRatings_own" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="shadow overflow-hidden rounded">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Grupeering
+                                        </th>
+                                        
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            ELO
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="racersRatings_global" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+                    </div>-->
+
+                    <div 
+                        x-show="activePage == 'grades'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Auastmed</h1>
+
+                            <svg id="openRankCreation" class="cursor-pointer w-8 h-8 mt-auto mb-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                            </svg>
+
+                            <div id="rankCreation" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="closeRankCreation fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+        
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Auastme lisamine
+                                                </h3>
+        
+                                                <button type="button" class="closeRankCreation text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+        
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div class="grid gap-1 grid-cols-2 mb-1">
+                                                    <div>
+                                                        <label for="rankId" class="mb-2 block text-sm font-medium text-zinc-300">ID</label>
+                                                        <input id="rankId" type="number" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                    </div>
+
+                                                    <div>
+                                                        <label for="rankSalary" class="mb-2 block text-sm font-medium text-zinc-300">Palk</label>
+                                                        <input id="rankSalary" type="number" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                    </div>
+                                                </div>
+
+                                                <div class="grid gap-1 grid-cols-2 mb-1">
+                                                    <div>
+                                                        <label for="rankName" class="mb-2 block text-sm font-medium text-zinc-300">Nimi</label>
+                                                        <input id="rankName" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                    </div>
+        
+                                                    <div>
+                                                        <label for="rankShort" class="mb-2 block text-sm font-medium text-zinc-300">Lühend</label>
+                                                        <input id="rankShort" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                    </div>
+                                                </div>
+                                            </div>
+        
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="createRank" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeRankCreation w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="rankEdit" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="closeRankEdit fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+        
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700 border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Auastme redigeerimine
+                                                </h3>
+        
+                                                <button type="button" class="closeRankEdit text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+        
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div class="grid gap-1 grid-cols-3 mb-1">
+                                                    <div>
+                                                        <label for="rankName2" class="mb-2 block text-sm font-medium text-zinc-300">Nimi</label>
+                                                        <input id="rankName2" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                    </div>
+        
+                                                    <div>
+                                                        <label for="rankShort2" class="mb-2 block text-sm font-medium text-zinc-300">Lühend</label>
+                                                        <input id="rankShort2" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                    </div>
+
+                                                    <div>
+                                                        <label for="rankSalary2" class="mb-2 block text-sm font-medium text-zinc-300">Palk</label>
+                                                        <input id="rankSalary2" type="number" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                    </div>
+                                                </div>
+        
+                                                <div class="grid gap-1 grid-cols-3 mb-1">
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="addGrade" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Lisa auaste</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="editGrade" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Redigeeri auastet</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="deleteGrade" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Kustuta auaste</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="addMember" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Lisa liige</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="removeMember" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Eemalda liige</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="changeMemberGrade" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Muuda liikme auastet</label>
+                                                    </div>
+
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="bankSend" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Arvelduskonto raha saatmine</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="bankWithdraw" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Võta arvelduskontolt raha</label>
+                                                    </div> 
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="bankDeposit" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Pane arvelduskontole raha</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="doors" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Ukselukud</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="intranet" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Siseveeb</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="intranet_admin" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Siseveebi admin</label>
+                                                    </div>
+
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="announce" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Teadaanded</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="properties" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Kinnisvara</label>
+                                                    </div>
+
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function1" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #1</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function2" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #2</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function3" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #3</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function4" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #4</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function5" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #5</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function6" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #6</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function7" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #7</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function8" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #8</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function9" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #9</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function10" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #10</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function11" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #11</label>
+                                                    </div> 
+                                                    
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function12" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #12</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function13" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #13</label>
+                                                    </div>
+        
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function14" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #14</label>
+                                                    </div>
+
+                                                    <div class="flex items-center mb-2">
+                                                        <input permission-name="function15" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-zinc-900 rounded border-zinc-700">
+                                                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-zinc-200">Fraktsiooni funktsioon #15</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+        
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="saveRank" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeRankEdit w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="shadow overflow-hidden rounded">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            ID
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Nimi
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Lühend
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Palk
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="factionGrades" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div 
+                        x-show="activePage == 'members'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Liikmed</h1>
+
+                            <svg id="addMemberButton" class="hidden cursor-pointer w-8 h-8 mt-auto mb-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                            </svg>
+
+                            <div id="addMemberModal" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="fixed inset-0 transform transition-all z-50 closeMemberModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+        
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Liikme lisamine
+                                                </h3>
+        
+                                                <button type="button" class="closeMemberModal text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+        
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div>
+                                                    <label for="recruitPerson" class="block mb-2 text-sm font-medium text-zinc-300">Vali mängija</label>
+                                                    <select id="recruitPerson" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                                    
+                                                <div>
+                                                    <label for="recruitRank" class="block mb-2 text-sm font-medium text-zinc-300">Auaste</label>
+                                                    <select id="recruitRank" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                        <option value="5">Töötaja</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+        
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="chooseRecruitMember" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeMemberModal w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="changeRankModal" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="fixed inset-0 transform transition-all z-50 closeRankModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+        
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Auastme muutmine
+                                                </h3>
+        
+                                                <button type="button" class="closeRankModal text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+        
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div>
+                                                    <label for="chooseRank" class="block mb-2 text-sm font-medium text-zinc-300">Vali auaste</label>
+                                                    <select id="chooseRank" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                        <option value="5">Liam Matthews (5)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+        
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button class="changePlayerRank w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeRankModal w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="updateCallsign" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="closeCallsign fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+        
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Kutsungi muutmine
+                                                </h3>
+        
+                                                <button type="button" class="closeCallsign text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+        
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div>
+                                                    <label for="callsignId" class="mb-2 block text-sm font-medium text-zinc-300">Kutsung</label>
+                                                    <input id="callsignId" min="0" max="99" type="number" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10 mb-1">
+                                                </div>
+                                            </div>
+        
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="changeCallsign" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeCallsign w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="viewTimesModal" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="fixed inset-0 transform transition-all z-50 closeTimesModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+        
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Liikme tööajad
+                                                </h3>
+        
+                                                <button type="button" class="closeTimesModal text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+        
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2 max-h-96 overflow-y-auto">
+                                                <div class="flex gap-1 mb-1">
+                                                    <div class="w-1/2 p-2 bg-zinc-900 text-zinc-300 shadow rounded">
+                                                        <div class="text-sm font-medium text-gray-400">
+                                                            Viimase kuu tööaeg:
+                                                        </div>
+        
+                                                        <div id="monthWorkTime" class="text-xl font-semibold">
+                                                            3 tundi ja 15 minutit
+                                                        </div>
+                                                    </div>
+        
+                                                    <div class="w-1/2 p-2 bg-zinc-900 text-zinc-300 shadow rounded">
+                                                        <div class="text-sm font-medium text-gray-400">
+                                                            Viimase nädala tööaeg:
+                                                        </div>
+        
+                                                        <div id="weekWorkTime" class="text-xl font-semibold">
+                                                            3 tundi ja 15 minutit
+                                                        </div>
+                                                    </div>
+                                                </div>
+        
+                                                <div class="shadow overflow-hidden rounded">
+                                                    <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                                        <thead class="bg-zinc-900">
+                                                            <tr class="text-left">
+                                                                <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                                                    Kuupäev
+                                                                </th>
+                            
+                                                                <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                                                    Tunde tööl
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="workTimesList" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="shadow overflow-hidden rounded">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-200">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th id="memberListCallsign" scope="col" class="hidden px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Kutsung
+                                        </th>
+                                        
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            SID
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Nimi
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Auaste
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Aktiivsus
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Viimati tööl
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="membersList" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div 
+                        x-show="activePage == 'logs'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Logid</h1>
+
+                            <div class=""></div>
+                        </div>  
+
+                        <div class="flex w-full mb-3 gap-1">
+                            <input type="text" class="rounded shadow bg-zinc-900 border border-zinc-700 p-2 w-2/6" placeholder="Nimi (PID)" id="searchPid">
+                            <input type="text" class="rounded shadow bg-zinc-900 border border-zinc-700 p-2 w-4/6" placeholder="Päringu sisu" id="search">
+
+                            <button @click="functions.searchLogs(1)" type="button" class="px-2 shadow rounded text-white bg-zinc-600 hover:bg-zinc-700" id="logSearch">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="shadow overflow-hidden rounded mb-4">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Tegevus
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Nimi (PID)
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Sisu
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Daatum
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logs_list" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+
+                        <div id="pagination" class="flex justify-center"></div>
+                    </div>
+
+                    <div 
+                        x-show="activePage == 'intranet'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Siseveeb</h1>
+
+                            <svg id="intranetAnnounce" class="hidden cursor-pointer w-8 h-8 mt-auto mb-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                            </svg>
+
+                            <div id="createIntranetAnnouncement" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="closeAnnounceCreate fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+            
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Teadaande loomine
+                                                </h3>
+            
+                                                <button type="button" class="closeAnnounceCreate text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+            
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div>
+                                                    <label for="announcementTitle" class="mb-2 block text-sm font-medium text-zinc-300">Pealkiri</label>
+                                                    <input maxlength="50" id="announcementTitle" type="text" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                </div>
+        
+                                                <div>
+                                                    <label for="announcementDesc" class="mb-2 block text-sm font-medium text-zinc-300">Sisu</label>
+                                                    <textarea maxlength="3000" id="announcementDesc" type="text" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-64"></textarea>
+                                                </div>
+                                            </div>
+            
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="createAnnouncement" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeAnnounceCreate w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="editIntranetAnnouncement" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="closeAnnounceEdit fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+            
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Teadaande redigeerimine
+                                                </h3>
+            
+                                                <button type="button" class="closeAnnounceEdit text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+            
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div>
+                                                    <label for="announcementEditTitle" class="mb-2 block text-sm font-medium text-zinc-300">Pealkiri</label>
+                                                    <input maxlength="50" id="announcementEditTitle" type="text" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                </div>
+        
+                                                <div>
+                                                    <label for="announcementEditDesc" class="mb-2 block text-sm font-medium text-zinc-300">Sisu</label>
+                                                    <textarea maxlength="3000" id="announcementEditDesc" type="text" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-64"></textarea>
+                                                </div>
+                                            </div>
+            
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="finishAnnouncementEditing" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeAnnounceEdit w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="announcementList" class="overflow-y-auto"></div>
+                    </div>
+
+                    <div 
+                        x-show="activePage == 'buyable_vehicles'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Tellitavad sõidukid</h1>
+
+                            <div id="buyVehicleModal" class="hidden fixed inset-0 z-50">
+                                <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                    <div class="fixed inset-0 transform transition-all z-50 closeBuyVehicleModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+        
+                                    <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-zinc-800 rounded shadow">
+                                            <!-- Modal header -->
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Sõiduki tellimine
+                                                </h3>
+        
+                                                <button type="button" class="closeBuyVehicleModal text-zinc-400 bg-transparent hover:bg-zinc-700 hover:text-white rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+        
+                                            <!-- Modal body -->
+                                            <div class="px-6 py-4 space-y-2">
+                                                <div>
+                                                    <label for="chooseGarage" class="block mb-2 text-sm font-medium text-zinc-300">Vali garaaz</label>
+                                                    <select id="chooseGarage" class="border border-zinc-700 bg-zinc-900 shadow text-zinc-300 text-sm rounded focus-none block p-2.5 w-full h-10">
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+        
+                                            <!-- Modal footer -->
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="buyVehicleWithGarage" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeBuyVehicleModal w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+
+                        <div class="shadow overflow-hidden rounded">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Mudel
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Hind
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="buyable_vehicles_table" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div 
+                        x-show="activePage == 'owned_vehicles'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Omatud sõidukid</h1>
+
+                            <div class=""></div>
+                        </div>  
+
+                        <div class="shadow overflow-hidden rounded">
+                            <table class="min-w-full divide-y divide-zinc-700 text-zinc-300">
+                                <thead class="bg-zinc-900">
+                                    <tr class="text-left">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Numbrimärk
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Mudel
+                                        </th>
+
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                            Asukoht
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ownedVehicles" class="bg-zinc-900 divide-y divide-zinc-700"></tbody>
+                            </table>
+                        </div>
+                    </div> 
+
+                    <div 
+                        x-show="activePage == 'my_factions'"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                        <div class="flex justify-between pb-5">
+                            <h1 class="text-xl font-medium mb-1">Minu fraktsioonid</h1>
+
+                            <div class=""></div>
+                        </div>  
+
+                        <div id="myFactions" class="grid grid-cols-2 gap-1"></div>
+                    </div> 
+                </div>
+
+                <div id="notifications" class="fixed right-3 bottom-2"></div>
+            </div>
+        </div>
+
+        <img src="nui://kk-core/web/cdn/frame.png" alt="tablet" class="tablet-frame" style="pointer-events: none; position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:89.5rem;height:45.5rem"/>
+    </div>
+</body>
+</html>

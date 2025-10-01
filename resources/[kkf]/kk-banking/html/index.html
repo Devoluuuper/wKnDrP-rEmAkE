@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>KK Banking</title>
+		<meta name="viewport" content="width=device-width">
+
+		<script src="https://cdn.tailwindcss.com"></script>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"/>
+		<style>
+			::-webkit-scrollbar {
+    			display: none;
+			}
+
+			#indeterminate {
+				display: none;
+				position: absolute;
+				height: 5px;
+				background: #0284C7;
+				animation: first 1.5s infinite ease-out;
+			}
+
+			@keyframes first {
+				0% {
+					left: 0%;
+					width: 0%;
+				}
+				100% {
+					left: 0%;
+					width: 100%;
+				}
+			}
+
+			input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+				-webkit-appearance: none;
+				margin: 0;
+			}
+
+			/* Firefox */
+			input[type=number] {
+				-moz-appearance: textfield;
+			}
+
+			input:focus, textarea:focus, select:focus{
+				outline: none;
+			}
+		</style>
+
+		<script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+		<script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+		<script src="script.js"></script>	
+	</head>
+	<body>
+		<div
+			id="container"
+			x-data="{activePage: 'home'}"
+			class="hidden"
+			style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+		>
+			<div id="moneyInHand" class="absolute left-0 bottom-0 ml-1 text-zinc-300">Raha käes: 10000</div>
+			<div id="indeterminate"></div>
+
+			<div class="bg-zinc-800 p-2 text-white w-full h-full">	
+				<div class="flex gap-1 w-full h-full">
+					<div class="w-72 h-full border-r border-zinc-700">
+						<div class="h-16 flex justify-center border-b border-zinc-700">
+							<div class="w-52">
+								<h1 class="text-center font-medium text-xl uppercase">Pank</h1>
+                                    
+								<div id="moneyInBank" class="text-xs w-full py-2 py-1 bg-zinc-900 text-zinc-300 border border-zinc-700 rounded shadow text-center">
+									$1000
+								</div>
+							</div>
+						</div>
+
+						<div class="h-full">
+							<a @click="activePage = 'logs'; functions.loadLogs()" class="text-zinc-300 hover:bg-zinc-700 hover:text-white flex items-center p-2 text-sm font-medium rounded text-white mt-1 mr-1">
+								<svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+								</svg>
+														
+								Konto väljavõte
+							</a>
+
+							<a id="depositButton" @click="activePage = 'deposit';" class="text-zinc-300 hover:bg-zinc-700 hover:text-white flex items-center p-2 text-sm font-medium rounded text-white mt-1 mr-1">
+								<svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+								</svg>
+			
+								Sissemakse
+							</a>
+
+							<a @click="activePage = 'withdraw';" class="text-zinc-300 hover:bg-zinc-700 hover:text-white flex items-center p-2 text-sm font-medium rounded text-white mt-1 mr-1">
+								<svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+								</svg>								  
+			
+								Väljamakse
+							</a>
+
+							<a @click="activePage = 'transfer';" class="text-zinc-300 hover:bg-zinc-700 hover:text-white flex items-center p-2 text-sm font-medium rounded text-white mt-1 mr-1">
+								<svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
+								</svg>
+								  			
+								Ülekanne
+							</a>
+
+							<a @click="activePage = 'bills'; functions.loadBills()" class="text-zinc-300 hover:bg-zinc-700 hover:text-white flex items-center p-2 text-sm font-medium rounded text-white mt-1 mr-1">
+								<svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+								</svg>
+								  			
+								Arved
+							</a>
+
+							<a id="factionButton" @click="activePage = 'faction';" class="text-zinc-300 hover:bg-zinc-700 hover:text-white flex items-center p-2 text-sm font-medium rounded text-white mt-1 mr-1">
+								<svg class="text-zinc-300 mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+								</svg>
+								  			
+								Fraktsioon
+							</a>
+						</div>
+					</div>
+
+					<div class="w-full h-full text-zinc-300">
+						<div 
+							x-show="activePage === 'logs'"
+							class="h-full w-full p-2 overflow-auto"
+							x-transition:enter="transition ease-out duration-500" 
+							x-transition:enter-start="opacity-0"
+							x-transition:enter-end="opacity-100 transform scale-100"
+						>
+							<h1 class="text-2xl font-semibold mb-1 mb-1">Konto väljavõte</h1>
+
+							<div id="bankLogs" class="grid gap-1 grid-cols-2 mt-2"></div>
+						</div>
+
+						<div 
+							x-show="activePage === 'deposit'"
+							class="w-full p-2"
+							x-transition:enter="transition ease-out duration-500" 
+							x-transition:enter-start="opacity-0"
+							x-transition:enter-end="opacity-100 transform scale-100"
+						>
+							<h1 class="text-2xl font-semibold mb-1">Sissemakse</h1>
+
+							<div id="depositContainer" class="flex gap-1 mt-2">
+								<div class="w-3/4">
+									<small>Summa, mida soovite panka sisestada:</small>
+									<input placeholder="$0" id="depositAmount" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+	
+									<button id="depositMoney" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-green-600 hover:bg-green-700">Kinnita</button>
+								</div>
+
+								<div class="w-1/2">
+									<small>Kiirvalikud:</small>
+
+									<button id="deposit500" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-sky-700 hover:bg-sky-800">$500</button>
+									<button id="deposit1000" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-sky-700 hover:bg-sky-800">$1000</button>
+									<button id="deposit1500" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-sky-700 hover:bg-sky-800">$1500</button>
+								</div>
+							</div>
+						</div>
+
+						<div 
+							x-show="activePage === 'withdraw'"
+							class="w-full p-2"
+							x-transition:enter="transition ease-out duration-500" 
+							x-transition:enter-start="opacity-0"
+							x-transition:enter-end="opacity-100 transform scale-100"
+						>
+							<h1 class="text-2xl font-semibold mb-1">Väljamakse</h1>
+
+							<div class="flex gap-1 mt-2">
+								<div class="w-3/4">
+									<small>Summa, mida soovite pangast väljastada:</small>
+									<input placeholder="$0" id="withdrawAmount" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+
+									<button id="withdrawMoney" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-green-600 hover:bg-green-700">Kinnita</button>
+								</div>
+
+								<div class="w-1/2">
+									<small>Kiirvalikud:</small>
+
+									<button id="withdraw500" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-sky-700 hover:bg-sky-800">$500</button>
+									<button id="withdraw1000" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-sky-700 hover:bg-sky-800">$1000</button>
+									<button id="withdraw1500" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-sky-700 hover:bg-sky-800">$1500</button>
+								</div>
+							</div>
+						</div>
+
+						<div 
+							x-show="activePage === 'transfer'"
+							class="w-full p-2"
+							x-transition:enter="transition ease-out duration-500" 
+							x-transition:enter-start="opacity-0"
+							x-transition:enter-end="opacity-100 transform scale-100"
+						>
+							<h1 class="text-2xl font-semibold mb-1">Ülekanne</h1>
+
+							<div class="mt-2">
+								<small>State ID:</small>
+								<input id="transferTarget" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+
+								<small>Summa, mida soovite üle kanda:</small>
+								<input placeholder="$0" id="transferAmount" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+
+								<button id="transferMoney" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-green-600 hover:bg-green-700">Kinnita</button>
+							</div>
+						</div>
+
+						<div 
+							x-show="activePage === 'bills'"
+							class="h-full w-full p-2 overflow-auto"
+							x-transition:enter="transition ease-out duration-500" 
+							x-transition:enter-start="opacity-0"
+							x-transition:enter-end="opacity-100 transform scale-100"
+						>
+							<h1 class="text-2xl font-semibold mb-1 mb-1">Arved</h1>
+
+							<div class="mt-2 w-full overflow-hidden border border-zinc-700 shadow rounded">
+								<table class="w-full">
+									<thead class="w-full bg-zinc-900 border-b border-zinc-700 shadow shadow text-center">
+										<tr>
+											<th scope="col" class="py-1 px-2 text-sm font-medium text-white tracking-wider">
+												ID
+											</th>
+
+											<th scope="col" class="py-1 px-2 text-sm font-medium text-white tracking-wider">
+												Saatja
+											</th>
+
+											<th scope="col" class="py-1 px-2 text-sm font-medium text-white tracking-wider">
+												Selgitus
+											</th>
+
+											<th scope="col" class="py-1 px-2 text-sm font-medium text-white tracking-wider">
+												Summa
+											</th>
+
+											<th scope="col" class="py-1 px-2 text-sm font-medium text-white tracking-wider">
+												Aeg
+											</th>
+
+											<th scope="col" class="py-1 px-2 text-sm font-medium text-white tracking-wider">
+											</th>
+										</tr>
+									</thead>
+									<tbody id="bills" class="w-full bg-zinc-900 shadow divide-y divide-zinc-700"></tbody>
+								</table>
+							</div>
+						</div>
+
+						<div 
+							x-show="activePage === 'faction'"
+							class="h-full w-full p-2 overflow-auto"
+							x-transition:enter="transition ease-out duration-500" 
+							x-transition:enter-start="opacity-0"
+							x-transition:enter-end="opacity-100 transform scale-100"
+						>
+							<h1 class="text-2xl font-semibold mb-1 mb-1">Fraktsioon</h1>
+
+							<div class="mt-2 flex gap-1">
+								<div class='w-1/2'>
+									<div class="border bg-zinc-900 shadow rounded border-1 border-zinc-700 p-2 mb-1">
+										<div class="flex items-center">
+											<div class="flex-shrink-0">
+												<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-zinc-300">
+													<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+												</svg>
+											</div>
+	
+											<div class="ml-2 w-0 flex-1">
+												<dl>
+													<dt class="text-sm font-medium text-zinc-300 truncate">
+														Konto jääk
+													</dt>
+													<dd>
+														<div class="text-lg font-medium text-zinc-400">
+															<span id="factionMoney">10000</span>
+														</div>
+													</dd>
+												</dl>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="w-1/2">
+									<div id="factionDepositContainer" class="flex gap-1">
+										<input id="factionDepositAmount" placeholder="$0" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+										<button id="factionDeposit" class="appearance-none w-32 py-1 px-2 mb-1 rounded shadow text-white bg-green-600 hover:bg-green-700">Sissemakse</button>
+									</div>
+
+									<div class="flex gap-1">
+										<input id="factionWithdrawAmount" placeholder="$0" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+										<button id="factionWithdraw" class="appearance-none w-32 py-1 px-2 mb-1 rounded shadow text-white bg-green-600 hover:bg-green-700">Väljamakse</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

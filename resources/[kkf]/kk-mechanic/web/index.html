@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>KK-Mechanic</title>
+
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"/>
+
+	<script src="nui://kk-core/web/cdn/jquery.min.js" type="text/javascript"></script>
+	<script src="script.js"></script>
+
+	<style>
+		.overflow-auto::-webkit-scrollbar {
+			display: none;
+		}
+
+		::-webkit-scrollbar {
+			width: 1px;
+			border-radius: 0.25rem
+		}
+
+		/* Track */
+		::-webkit-scrollbar-track {
+			background: #3F3F46;
+			border-radius: 0.25rem
+		}
+		
+		/* Handle */
+		::-webkit-scrollbar-thumb {
+			background: #1e1e1f ;
+			border-radius: 0.25rem
+		}
+
+		/* Handle on hover */
+		::-webkit-scrollbar-thumb:hover {
+			background: #141414;
+			border-radius: 0.25rem
+		}
+
+		#loadBar {
+			display: none;
+			width: 24px;
+			height: 24px;
+			margin: 8px;
+			margin-top: 12px;
+			border-radius: 50%;
+			border: 3px solid #E5E7EB;
+			border-color: #E5E7EB transparent #E5E7EB transparent;
+			animation: loadBar 1.2s linear infinite;
+		}
+
+		@keyframes loadBar {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+	</style>
+</head>
+<body class="hidden">
+	<div 
+		id="container"
+		style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+	>
+		<!--<div class="w-full h-full bg-zinc-800 text-zinc-200">
+			<div class="relative w-full h-full flex flex-col min-w-0">
+				<div class="w-full flex-auto p-2" style="height: 750px">
+					<div class="w-full flex flex-wrap">
+						<div class="w-1/3 pr-4 pl-4 pb-1 border-r border-b border-zinc-700">
+							<h5 class="mt-4 mb-2 uppercase font-medium">Sõiduki andmed:</h5>
+
+							<div class="bg-zinc-900 p-2 rounded border shadow border-1 border-zinc-700">
+								<ul class="flex flex-col">
+									<li class="relative block py-2 px-4 border-b border-zinc-700">
+										<b>Mudel:</b> <p id="vehicleModel" class="float-right">Itali GTX</p>
+									</li>
+									<li class="relative block py-2 px-4 border-b border-zinc-700">
+										<b>Klass:</b> <p id="vehicleClass" class="float-right">XXX</p>
+									</li>
+									<li class="relative block py-2 px-4 border-b border-zinc-700">
+										<b>Numbrimärk:</b> <p id="vehiclePlate" class="float-right">UIHU1234</p>
+									</li>
+									<li class="relative block py-2 px-4">
+										<b>Läbisõit:</b> <p id="vehicleMileage" class="float-right">12345</p>
+									</li>
+								</ul>
+							</div>
+
+							<h5 class="mt-4 mb-2 uppercase font-medium">Hooldatavad osad:</h5>
+							<div id="vehicleMaintainance" class="overflow-auto" style="height:190px"></div>
+						</div>
+						
+						
+						<div class="w-2/3 pr-4 pl-4 pb-1 border-b border-zinc-700">
+							<div class="flex justify-between">
+								<h5 class="mt-4 mb-2 uppercase font-medium">TEOSTATUD TÖÖD:</h5>
+								<div id="loadBar"></div>
+							</div>
+
+							<div id="vehicleHistory" class="overflow-auto" style="height:405px"></div>
+						</div>
+
+						<div class="w-full pr-4 pl-4 pb-1">
+							<h5 class="mt-2 mb-2 uppercase font-medium">TELLI TUUNINGUID:</h5>
+
+							<div id="vehicleParts" class="flex overflow-y-auto whitespace-nowrap w-full"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>-->
+
+		<div class="relative w-full h-full max-h- bg-slate-950 text-gray-200 p-4">
+			<div class="grid grid-cols-3 gap-4">
+				<div class="flex flex-col gap-y-4">
+					<div class="bg-slate-800/75 rounded-md border-b-2 border-blue-500 p-2">
+						<div class="px-4 sm:px-0">
+							<h3 class="text-base font-semibold leading-7 text-gray-100">Sõiduki informatsioon</h3>
+							<p class="mt-1 max-w-2xl text-sm leading-6 text-gray-300">Sõiduki andmed riiklikust andmebaasist.</p>
+						</div>
+						<div class="mt-6">
+							<dl class="grid grid-cols-1 sm:grid-cols-2">
+								<div class="border-t border-gray-700 px-4 py-4 sm:col-span-1 sm:px-0">
+									<dt class="text-sm font-medium leading-6 text-gray-400">Sõiduki brand</dt>
+									<dd class="mt-1 text-sm leading-6 text-gray-200 sm:mt-2" id="vehicleBrand">BMW</dd>
+								</div>
+								<div class="border-t border-gray-700 px-4 py-4 sm:col-span-1 sm:px-0">
+									<dt class="text-sm font-medium leading-6 text-gray-400">Sõiduki mudel</dt>
+									<dd class="mt-1 text-sm leading-6 text-gray-200 sm:mt-2" id="vehicleModel">ADAD</dd>
+								</div>
+								<div class="border-t border-gray-700 px-4 py-4 sm:col-span-1 sm:px-0">
+									<dt class="text-sm font-medium leading-6 text-gray-400">Sõiduki klass</dt>
+									<dd class="mt-1 text-sm leading-6 text-gray-200 sm:mt-2" id="vehicleClass">X</dd>
+								</div>
+								<div class="border-t border-gray-700 px-4 py-4 sm:col-span-1 sm:px-0">
+									<dt class="text-sm font-medium leading-6 text-gray-400">Sõiduki numbrimärk</dt>
+									<dd class="mt-1 text-sm leading-6 text-gray-200 sm:mt-2" id="vehiclePlate">KK</dd>
+								</div>
+								<div class="border-t border-gray-700 px-4 py-4 sm:col-span-1 sm:px-0">
+									<dt class="text-sm font-medium leading-6 text-gray-400">Sõiduki läbisõit</dt>
+									<dd class="mt-1 text-sm leading-6 text-gray-200 sm:mt-2" id="vehicleMileage">6.969 miili</dd>
+								</div>
+								<div class="border-t border-gray-700 px-4 py-4 sm:col-span-1 sm:px-0">
+									<dt class="text-sm font-medium leading-6 text-gray-400">Sõiduki hind</dt>
+									<dd class="mt-1 text-sm leading-6 text-gray-200 sm:mt-2" id="vehiclePrice">13123123</dd>
+								</div>
+							</dl>
+						</div>
+					</div>
+					<div class="bg-slate-800/75 rounded-md border-b-2 border-blue-500 p-2 overflow-y-auto max-h-[16.2rem]">
+						<div class="px-4 sm:px-0">
+							<h3 class="text-base font-semibold leading-7 text-gray-100">Hooldusajalugu</h3>
+							<p class="mt-1 max-w-2xl text-sm leading-6 text-gray-300">Kõik esinduses tehtud toimingud on siinses logiraamatus</p>
+						</div>
+						<div class="mt-6">
+							<div id="vehicleHistory" class="overflow-auto"></div>
+						</div>
+					</div>
+				</div>
+				<div class="bg-slate-800/75 rounded-md border-b-2 border-blue-500 p-2 overflow-y-auto max-h-[40rem]">
+					<div class="px-4 sm:px-0">
+						<h3 class="text-base font-semibold leading-7 text-gray-100">Hooldatavad osad</h3>
+						<p class="mt-1 max-w-2xl text-sm leading-6 text-gray-300">Lähidiagnostika auto varuosadele</p>
+					</div>
+					<div class="mt-6">
+						<div id="vehicleMaintainance" class="overflow-auto"></div>
+					</div>
+				</div>
+				<div class="bg-slate-800/75 rounded-md border-b-2 border-blue-500 p-2 max-h-[40rem]">
+					<div class="px-4 sm:px-0">
+						<h3 class="text-base font-semibold leading-7 text-gray-100">Tuuningute tellimine</h3>
+						<p class="mt-1 max-w-2xl text-sm leading-6 text-gray-300">Kõik esinduses tehtud toimingud on siinses logiraamatus</p>
+					</div>
+					<div class="mt-6 overflow-y-auto max-h-[34rem]">
+						<div id="vehicleParts" class="overflow-auto"></div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<img src="nui://kk-core/web/cdn/frame.png" alt="tablet" class="tablet-frame" style="pointer-events: none; position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:89.5rem;height:45.5rem"/>
+</body>
+</html>

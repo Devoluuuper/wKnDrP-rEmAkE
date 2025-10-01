@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="script.js"></script>
+    
+        <title>KKasutaja Guide</title>
+    </head>
+<body class="h-screen w-screen">
+    <div 
+        id="container" 
+        class="hidden"
+        style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+    >
+        <div class="flex gap-1 p-2 bg-zinc-900 text-zinc-300 text-center">
+            <div class="w-4/6 justify-center items-center">
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2 mt-8 mb-8">
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">F1</p>
+                        <p class="mt-auto mb-auto ml-1">Telefoni avamine</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">F2</p>
+                        <p class="mt-auto mb-auto ml-1">Radiaalmenüü</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">F11</p>
+                        <p class="mt-auto mb-auto ml-1">Hääletugevus</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">K</p>
+                        <p class="mt-auto mb-auto ml-1">Inventory avamine</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">J</p>
+                        <p class="mt-auto mb-auto ml-1">Sekundaarse inventory avamine</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">B</p>
+                        <p class="mt-auto mb-auto ml-1">Turvavöö</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">CAPS</p>
+                        <p class="mt-auto mb-auto ml-1">Kiirusepiiraja</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">L</p>
+                        <p class="mt-auto mb-auto ml-1">Sõiduki lukustamine</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">U</p>
+                        <p class="mt-auto mb-auto ml-1">Sõiduki mootor</p>
+                    </div>
+
+                    <div class="flex gap-1 justify-center">
+                        <p class="px-5 py-1 bg-zinc-800 border border-zinc-700 shadow rounded">C</p>
+                        <p class="mt-auto mb-auto ml-1">Tegevuse katkestamine</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mb-8">
+                    <div class="grid grid-cols-2 gap-20">
+                        <div class="">
+                            <p class="w-36 ml-auto mr-auto text-lg text-zinc-200 bg-zinc-800 border border-zinc-700 shadow rounded">Alt</p>
+                            <p>Antud nupu all hoidmine võimaldab tutvuda ümbritsevaga.</p>
+                        </div>
+
+                        <div class="">
+                            <p class="w-36 ml-auto mr-auto text-lg text-zinc-200 bg-zinc-800 border border-zinc-700 shadow rounded">F2</p>
+                            <p class="">Radiaalmenüü uueneb vastavalt sinu karakteri keskkonnale.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-2 mt-2 text-zinc-300 text-lg">
+                    <span class="text-sky-700 font-medium">NB!</span> Nuppe saab määrata ka enda soovitud nupu alla settingute alt!
+                </div>
+            </div>
+
+            <div class="p-2 border-l border-zinc-700 w-2/6">
+                <img class="w-32 h-32 ml-auto mr-auto mb-2" src="nui://kk-guide/web/img/logo.png">
+                <h3 class="text-xl font-medium uppercase">Tere tulemast!</h3>
+
+                <p class="mt-4">Meil on hea meel Teid meie serveris näha! Käsklusega /help avaneb antud aken uuesti. See korter on teile Teie seikluse esimeseks peavarjuks. Lisaks saad siin salvestada erinevaid outfitte, esemeid jms.</p>
+                
+                <button id="close" class="rounded shadow px-10 py-2 bg-sky-700 hover:bg-sky-800 mt-4 text-white text-lg">Tegudele</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        textarea:focus, input:focus{
+            outline: none;
+        }
+
+        #loader {
+            display: none;
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid #E5E7EB;
+            border-color: #E5E7EB transparent #E5E7EB transparent;
+            animation: loader 1.2s linear infinite;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        @keyframes loader {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <title>KKasutaja Properties2</title>
+</head>
+<body class="w-screen h-screen">
+    <div id="computer" class="hidden">
+        <div 
+            style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+        >
+            <div id="hovering" class="absolute h-12 w-full -mt-10 z-10"></div>
+
+            <div class="flex w-full h-full text-zinc-200 bg-zinc-800">
+                <div id="first" class="relative w-3/12 h-full shrink border-zinc-700 border-r px-3 py-2 grow">
+                    <h1 class="text-xl font-medium">Arved</h1>
+                    <h1 class="text-xs font-medium text-zinc-400 mb-1">Kolme kinnisvaramaksu arve tasumata jätmisel võõrandatakse kinnistu.</h1>
+
+                    <div id="bills" class="overflow-y-auto" style="height: 600px"></div>
+                </div>
+    
+                <div class="w-9/12 h-full flex flex-col">
+                    <div class="flex justify-between w-full h-32 border-zinc-700 border-b px-3 py-2">
+                        <div>
+                            <h1 class="text-xl font-medium">Kinnisvarahaldus</h1>
+                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Kinnisvara seaded ning haldus.</h1>
+
+                            <div class="flex bg-zinc-900 text-sm h-min w-96 p-2 rounded border-zinc-700 border shadow items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m6.115 5.19.319 1.913A6 6 0 0 0 8.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 0 0 2.288-4.042 1.087 1.087 0 0 0-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 0 1-.98-.314l-.295-.295a1.125 1.125 0 0 1 0-1.591l.13-.132a1.125 1.125 0 0 1 1.3-.21l.603.302a.809.809 0 0 0 1.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 0 0 1.528-1.732l.146-.292M6.115 5.19A9 9 0 1 0 17.18 4.64M6.115 5.19A8.965 8.965 0 0 1 12 3c1.929 0 3.716.607 5.18 1.64" />
+                                </svg>
+
+                                <div class="flex flex-col ml-2">
+                                    <p id="propertyLabel">Harmony Trailer Park #1</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="closeTablet" class="flex bg-zinc-900 text-sm h-min p-2 rounded border border-zinc-700 shadow">
+                            Sulge
+                        </button>
+                    </div>
+                    
+                    <div id="shit" class="flex grow h-full">
+                        <div class="w-2/5 h-full border-zinc-700 border-r px-3 py-2">
+                            <h1 class="text-xl font-medium mb-1">Valikud</h1>
+
+                            <div id="propertyOptions" class="hidden">
+                                <div id="buyKeys" class="flex justify-between bg-zinc-900 shadow rounded border-zinc-700 border p-2 mb-1">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mt-auto mb-auto">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+                                        </svg>
+                                        
+                                        <div class="ml-2 mt-auto mb-auto">
+                                            <h1>Võti</h1>
+                                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Sõber vajab võtit, pole probleemi!</h1>
+                                        </div>
+                                    </div>
+
+                                    <button id="buyKeysButton" class="px-2.5 py-1.5 h-min mt-auto mb-auto text-xs font-medium rounded shadow text-white bg-green-600 hover:bg-green-700">$0</button>
+                                </div>
+
+                                <div id="buyLock" class="flex justify-between bg-zinc-900 shadow rounded border-zinc-700 border p-2 mb-1">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mt-auto mb-auto">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                        </svg>
+                                        
+                                        <div class="ml-2 mt-auto mb-auto">
+                                            <h1>Lukusüdamik</h1>
+                                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Vaheta lukusüdamik, pead uued võtmed ostma.</h1>
+                                        </div>
+                                    </div>
+
+                                    <button id="buyLockButton" class="px-2.5 py-1.5 h-min mt-auto mb-auto text-xs font-medium rounded shadow text-white bg-green-600 hover:bg-green-700">$0</button>
+                                </div>
+
+                                <div id="sellProperty" class="flex justify-between bg-zinc-900 shadow rounded border-zinc-700 border p-2 mb-1">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mt-auto mb-auto">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                                        </svg>
+                                        
+                                        <div class="ml-2 mt-auto mb-auto">
+                                            <h1>Müümine</h1>
+                                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Juhul kui kinnisvara perele väikseks jääb.</h1>
+                                        </div>
+                                    </div>
+
+                                    <button id="sellPropertyButton" class="px-2.5 py-1.5 h-min mt-auto mb-auto text-xs font-medium rounded shadow text-white bg-green-600 hover:bg-green-700">Müü</button>
+                                </div>
+                            </div>
+
+                            <div id="warehouseOptions" class="hidden">
+                                <div id="x" class="flex justify-between bg-zinc-900 shadow rounded border-zinc-700 border p-2 mb-1">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mt-auto mb-auto">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605" />
+                                        </svg>
+                                        
+                                        <div class="ml-2 mt-auto mb-auto">
+                                            <h1>Lao tase</h1>
+                                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Ole teistest alati samm ees.</h1>
+                                        </div>
+                                    </div>
+
+                                    <svg id="openLevelModal" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="cursor-pointer mt-auto mb-auto w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                    </svg>
+
+                                    <div id="levelModal" class="hidden fixed inset-0 z-50">
+                                        <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                            <div class="closeLevelModal fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                            </div>
+                                    
+                                            <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <!-- Modal content -->
+                                                <div class="relative rounded shadow bg-zinc-800">
+                                                    <!-- Modal header -->
+                                                    <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                        <h3 class="text-xl font-semibold text-white">
+                                                            Lao tase
+                                                        </h3>
+                                    
+                                                        <button type="button" class="closeLevelModal text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                            <span class="sr-only">Close modal</span>
+                                                        </button>
+                                                    </div>
+                                    
+                                                    <div class="px-6 py-4 space-y-2">
+                                                        <!-- Modal body -->
+                                                        <div class="text-center">
+                                                            <div class="mb-4">
+                                                                <h4 class="text text-white">Hetkene level: <span id="currentLevel" class="text-green-400">1</span></h4>
+                                                            </div>
+
+                                                            <div id="levelBubbles" class="flex justify-center gap-4 mb-4">
+                                                                <!-- Dynamic level indicators could be updated via JS -->
+                                                                <span class="inline-block bg-zinc-500 w-8 h-8 rounded-full shadow"></span>
+                                                                <span class="inline-block bg-zinc-700 w-8 h-8 rounded-full shadow"></span>
+                                                                <span class="inline-block bg-zinc-700 w-8 h-8 rounded-full shadow"></span>
+                                                            </div>
+
+                                                            <button id="levelUpBtn" class="px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded">Tõsta levelit</button>
+                                                        </div>
+                                                    </div>                                                       
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="x" class="flex justify-between bg-zinc-900 shadow rounded border-zinc-700 border p-2 mb-1">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mt-auto mb-auto">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                        </svg>
+                                        
+                                        <div class="ml-2 mt-auto mb-auto">
+                                            <h1>Krüpto</h1>
+                                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Vajad raha, pole probleemi, makse maha ei lähe! :)</h1>
+                                        </div>
+                                    </div>
+
+                                    <svg id="openCryptoModal" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="cursor-pointer mt-auto mb-auto w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                    </svg>
+
+                                    <div id="cryptoModal" class="hidden fixed inset-0 z-50">
+                                        <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                            <div class="closeCryptoModal fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                            </div>
+                                    
+                                            <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <!-- Modal content -->
+                                                <div class="relative rounded shadow bg-zinc-800">
+                                                    <!-- Modal header -->
+                                                    <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                        <h3 class="text-xl font-semibold text-white">
+                                                            Krüpto
+                                                        </h3>
+                                    
+                                                        <button type="button" class="closeCryptoModal text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                            <span class="sr-only">Close modal</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="px-6 py-4 space-y-2">
+                                                        <!-- Modal body -->
+                                                        <div class="text-center">
+                                                            <div class="flex justify-center gap-5 mb-4">
+                                                                <h4 class="text text-white">Arvutite arv: <span id="computerCount" class="text-green-400">5</span></h4>
+                                                                <h4 class="text text-white">Teil on: <span id="cryptoCount" class="text-green-400">5</span> (EQ)</h4>
+                                                            </div>
+
+                                                            <div class="flex gap-1 items-center">
+                                                                <div class="w-1/2">
+                                                                    <small>Summa, mida soovite fraktsiooni saata:</small>
+                                                                    <input placeholder="0 (EQ)" id="factionCryptoCount" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+                                    
+                                                                    <button id="sendCryptoToFaction" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-orange-600 hover:bg-orange-700">Saada fraktsiooni</button>
+                                                                </div>
+
+                                                                <div class="w-1/2">
+                                                                    <small>Summa, mida soovite fraktsioonist kinnisvarasse saata:</small>
+                                                                    <input placeholder="0 (EQ)" id="insertCryptoCount" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700" type="number">
+                                    
+                                                                    <button id="factionCryptoInsert" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-sky-600 hover:bg-sky-700">Saada kinnisvarast</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>                                                       
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="x" class="flex justify-between bg-zinc-900 shadow rounded border-zinc-700 border p-2 mb-1">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mt-auto mb-auto">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5" />
+                                        </svg>
+                                        
+                                        <div class="ml-2 mt-auto mb-auto">
+                                            <h1>Soetatavad esemed</h1>
+                                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Sebi empsile uus vaas.</h1>
+                                        </div>
+                                    </div>
+
+                                    <svg id="openTableModal" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="cursor-pointer mt-auto mb-auto w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                    </svg>
+
+                                    <div id="tableModal" class="hidden fixed inset-0 z-50">
+                                        <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                            <div class="closeTableModal fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                            </div>
+                                    
+                                            <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <!-- Modal content -->
+                                                <div class="relative rounded shadow bg-zinc-800">
+                                                    <!-- Modal header -->
+                                                    <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                        <h3 class="text-xl font-semibold text-white">
+                                                            Soetatavad esemed
+                                                        </h3>
+                                    
+                                                        <button type="button" class="closeTableModal text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                            <span class="sr-only">Close modal</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div id="shopItems" class="px-6 py-4 space-y-2"></div>                                                       
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="warehouseMissions" class="flex justify-between bg-zinc-900 shadow rounded border-zinc-700 border p-2 mb-1">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mt-auto mb-auto">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
+                                        </svg>
+                                        
+                                        <div class="ml-2 mt-auto mb-auto">
+                                            <h1>Missioonid</h1>
+                                            <h1 class="text-xs font-medium text-zinc-400 mb-1">Väike side hustle halba ei tee...</h1>
+                                        </div>
+                                    </div>
+
+                                    <svg id="openMissionModal" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="cursor-pointer mt-auto mb-auto w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                    </svg>
+
+                                    <div id="missionModal" class="hidden fixed inset-0 z-50">
+                                        <div class="absolute w-full h-full pt-5 flex justify-center overflow-y-auto overflow-x-hidden">
+                                            <div class="closeMissionModal fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                            </div>
+                                    
+                                            <div class="relative w-full max-w-xl md:max-w-2xl h-min z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                                <!-- Modal content -->
+                                                <div class="relative rounded shadow bg-zinc-800">
+                                                    <!-- Modal header -->
+                                                    <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                        <h3 class="text-xl font-semibold text-white">
+                                                            Missioonid
+                                                        </h3>
+                                    
+                                                        <button type="button" class="closeMissionModal text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                            <span class="sr-only">Close modal</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="px-6 py-4 space-y-2">
+                                                        <div>
+                                                            <small>Ese:</small>
+                                                            <select id="chooseMissionItem" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow bg-zinc-900 border border-zinc-700">
+                                                                
+                                                            </select>
+                                                        </div>
+
+                                                        <button id="startMissionButton" class="appearance-none w-full py-1 px-2 mb-1 rounded shadow text-white bg-green-600 hover:bg-green-700">Alusta missiooni</button>
+                                                    </div>                                                       
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="w-3/5 h-full px-3 py-2">
+                            <h1 class="text-xl font-medium mb-1">Logid</h1>
+
+                            <div id="logs" class="overflow-y-auto" style="height: 506px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <img src="nui://kk-core/web/cdn/frame.png" alt="tablet" class="tablet-frame" style="pointer-events: none; position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:89.5rem;height:45.5rem"/>
+    </div>
+
+    <div id="catalogue" class="hidden">
+        <div 
+            class="bg-zinc-800 text-white overflow-y-auto" 
+            style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+        >
+            <div id="hovering2" class="absolute h-12 w-full -mt-10"></div>
+
+            <div id="propertiesSell" class="p-6 h-full w-full grid grid-cols-3 gap-4">
+
+            </div>
+        </div>
+
+        <img src="nui://kk-core/web/cdn/frame.png" alt="tablet" class="tablet-frame" style="pointer-events: none; position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:89.5rem;height:45.5rem"/>
+    </div>
+</body>
+</html>

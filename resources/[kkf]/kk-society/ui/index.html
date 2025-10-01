@@ -1,0 +1,1002 @@
+<!doctype html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KK Society</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/spruce@2.x.x/dist/spruce.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="script.js" type="text/javascript"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+
+    <div id="invitation" tabindex="-1" class=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 md:inset-0 h-modal md:h-full">
+        <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+            <div class="relative bg-zinc-800 rounded shadow dark:bg-zinc-700">
+                <div class="p-6 text-center">
+                    <i style="color:gray" class="far fa-envelope fa-3x"></i>
+                    <h3 id="companyOffer" class="mb-5 text-lg font-normal text-zinc-500 dark:text-zinc-400">Kas soovite liituda Õigusosakond fraktsiooniga?</h3>
+                    <button id="acceptInvitation" type="button" class="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-zinc-300 dark:focus:ring-zinc-800 font-medium rounded text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                        Liitu
+                    </button>
+                    <button id="declineInvitation" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-zinc-300 dark:focus:ring-zinc-800 font-medium rounded text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Keeldu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div id="tabletBody" x-data="{activeTab: 'home', changeJob: false}" style="display:none;position: absolute; margin: 0 auto; left:1vh; right: 0; top: 6vh; width:78rem;height:43rem; background-color: rgba(83, 83, 83, 0.281);"
+    @message.window="
+    if ($event.data.action == 'setJob') {
+        job = $event.data.data;
+    }">
+    <nav class="sticky top-0 z-40 lg:z-50 w-full max-w-8xl mx-auto bg-zinc-900">
+        <img src="nui://kk-core/web/cdn/frame.png" style="pointer-events: none; position: fixed; margin: 0 auto; left: 1rem; right: 0; top: 4.2vh; width: 82rem; height: 50rem">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div class="relative flex items-center justify-between h-16">
+            <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+              <div class="flex-shrink-0 flex items-center">
+                <i class="fa fa-gears text-white m-1"></i></i>
+              </div>
+              <div class="hidden sm:block sm:ml-6">
+                <div class="flex space-x-4">
+                    <a @click="activeTab = 'home'" id="refreshHome"
+                        :class="{ 'bg-zinc-900 text-white': activeTab === 'home', 'text-zinc-300 hover:bg-zinc-700 hover:text-white' : activeTab !== 'home'}"
+                        href="#"
+                        class="group flex items-center px-2 py-2 text-sm font-medium rounded">
+                        <i class="fas fa-home"></i></i><h4 class="m-1">Avaleht</h4>
+                    </a>
+
+                    <a permission-required="members" id="refreshMembersButton" @click="activeTab = 'members'"
+                        :class="{ 'bg-zinc-900 text-white': activeTab === 'members', 'text-zinc-300 hover:bg-zinc-700 hover:text-white' : activeTab !== 'members'}"
+                        href="#"
+                        class="group flex items-center px-2 py-2 text-sm font-medium rounded">
+                        <i class="fas fa-users"></i></i><h4 class="m-1">Liikmed</h4>
+                    </a>
+
+                    <a permission-required="ranks" id="refreshRanksButton" @click="activeTab = 'ranks'"
+                        :class="{ 'bg-zinc-900 text-white': activeTab === 'ranks', 'text-zinc-300 hover:bg-zinc-700 hover:text-white' : activeTab !== 'ranks'}"
+                        href="#"
+                        class="group flex items-center px-2 py-2 text-sm font-medium rounded">
+                        <i class="fas fa-medal"></i><h4 class="m-1">Auastmed</h4>
+                    </a>
+										
+					<a permission-required="jobMenu" id="refreshBillsButton" @click="activeTab = 'bills'"
+                        :class="{ 'bg-zinc-900 text-white': activeTab === 'bills', 'text-zinc-300 hover:bg-zinc-700 hover:text-white' : activeTab !== 'bills'}"
+                        href="#"
+                        class="group flex items-center px-2 py-2 text-sm font-medium rounded">
+                        <i class="fas fa-money-bill"></i><h4 class="m-1">Maksmata arved</h4>
+                    </a>
+
+                    <a permission-required="members" @click="activeTab = 'logs'"
+                        :class="{ 'bg-zinc-900 text-white': activeTab === 'logs', 'text-zinc-300 hover:bg-zinc-700 hover:text-white' : activeTab !== 'logs'}"
+                        href="#"
+                        class="group flex items-center px-2 py-2 text-sm font-medium rounded">
+                        <i class="fas fa-scroll"></i><h4 class="m-1">Logid</h4>
+                    </a>
+
+                    <a permission-required="banking"  id="refreshVehiclesButton" @click="activeTab = 'vehicles'"
+                        :class="{ 'bg-zinc-900 text-white': activeTab === 'vehicles', 'text-zinc-300 hover:bg-zinc-700 hover:text-white' : activeTab !== 'vehicles'}"
+                        href="#"
+                        class="group flex items-center px-2 py-2 text-sm font-medium rounded">
+                        <i class="fas fa-truck"></i><h4 class="m-1">Sõidukid</h4>
+                    </a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </nav>
+    <div id="mainContent" class="h-screen flex overflow-hidden bg-zinc-800" style="max-height: 100%;">
+        <div class="flex flex-col w-0 flex-1 overflow-hidden">
+            <main id="mainElement" class="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabindex="0" x-init="$el.focus()">
+                <div class="py-6" x-show="activeTab === 'home'">
+                    <div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between">
+                            <div class="flex">
+                                <h1 id="societyName" class="text-2xl font-semibold text-zinc-100">Õigusosakond</h1>
+                                <svg @click="changeJob = !changeJob" class="mt-2 ml-2 w-4 h-4 cursor-pointer select-none" aria-hidden="true" fill="none" stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+
+                            <div class="">
+                                <button permission-required="banking" id="buySafe" type="button" class="text-white bg-sky-600 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-zinc-300 dark:focus:ring-zinc-800 font-medium rounded text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Soeta seif ($100000)</button>
+                                <button permission-required="jobMenu" id="leaveSociety" type="button" class="ml-2 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-zinc-300 dark:focus:ring-zinc-800 font-medium rounded text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Lahku fraktsioonist</button>
+                            </div>
+                        </div>
+
+                        <div x-show="changeJob" class="absolute ml-8 z-10 w-44 bg-zinc-800 rounded divide-y divide-zinc-100 shadow">
+                            <ul class="py-1 text-sm text-zinc-200" x-data="{items: []}" @update-societies.window="items = $event.detail.items">
+                                <template x-for="item in items" :key="item">
+                                    <li>
+                                        <a x-bind:job="item.name" x-bind:grade="item.grade" x-bind:label="item.label" class="block py-2 px-4 hover:bg-zinc-800" x-text="item.label" id="chooseSociety" ></a>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+
+                        <div permission-required="jobMenu" class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            <ul class="divide-y divide-zinc-700">
+                                <li class="py-4">
+                                    <div class="flex flex-col mt-5">
+                                        <div class="bg-zinc-900 shadow overflow-hidden border-b border-zinc-200 sm:rounded">
+                                            <div class="px-4 sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8">
+                                                <div class="py-6 md:flex md:items-center md:justify-between lg:border-zinc-300">
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="flex items-center">
+                                                            <div>
+                                                                <div class="flex items-center">
+                                                                    <h1 id="PlayerName" class="ml-3 text-2xl font-bold leading-7 text-zinc-100 sm:leading-8 sm:truncate">Tere tulemast, Madis Metsamees</h1>
+                                                                </div>
+                                                                <dl class="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                                                    <dd id="Grade" class="mt-3 flex items-center text-sm text-zinc-500 font-medium sm:mr-6 sm:mt-0">
+                                                                        Kuulud fraktsiooni Flywheels, auastmel Admin ja sinu palk on $0 TUND.
+                                                                    </dd>
+                                                                </dl>
+                                                            </div>
+
+                                                            <div style="margin-left: 50px">
+                                                                <div class="flex items-center">
+                                                                    <h1 class="ml-3 text-2xl font-bold leading-7 text-zinc-100 sm:leading-8 sm:truncate">
+                                                                       Fraktsiooni liikmete arv:
+                                                                    </h1>
+                                                                </div>
+                                                                <dl class="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                                                    <dd id="memberCount" class="mt-3 flex items-center text-sm text-zinc-500 font-medium sm:mr-6 sm:mt-0">
+                                                                        Fraktsiooni kuulub 1/15 inimest.
+                                                                    </dd>
+                                                                </dl>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-6" x-show="activeTab === 'logs'">
+                    <div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <input type="text" class="shadow-sm p-2 focus:ring-blue-500  focus:border-blue-500 sm:text-sm border bg-zinc-900 text-zinc-200 border-zinc-700 rounded" placeholder="Nimi (PID)" id="logPid">
+                            <input type="text" class="shadow-sm p-2 focus:ring-blue-500  focus:border-blue-500 sm:text-sm border bg-zinc-900 text-zinc-200 border-zinc-700 rounded" style="width: 79%" placeholder="või/ja otsingu sisu" id="logContext">
+                            <span class="ml-2 mt-2">
+                                <button type="button" class="h-9 inline-flex items-center px-4 py-2 border border-transparent shadow-sm font-medium rounded text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm" id="logSearch"><i class="fas fa-search"></i></button>
+                            </span>
+                        </div>
+
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            <!-- Replace with your content -->
+                            <!-- This example requires Tailwind CSS v2.0+ -->
+                            <ul class="divide-y divide-zinc-200">
+                                <li class="py-4">
+                                    <div class="flex flex-col mt-5">
+                                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                                <div class="shadow overflow-hidden border-b border-zinc-200 sm:rounded">
+                                                    <table class="min-w-full divide-y divide-zinc-200">
+                                                        <thead class="bg-zinc-900">
+                                                        <tr>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Kategooria
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Nimi (Isikukood)
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Sisu
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Aeg
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="bg-zinc-800 divide-y divide-zinc-200" x-data="{items: []}"
+                                                               @update-log-list.window="items = $event.detail.items">
+                                                        <template x-for="item in items" :key="item">
+                                                            <tr>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-200" x-text="item.action">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.pid">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4">
+                                                                    <textarea readonly class="mt-1 bg-zinc-900 rounded text-sm text-zinc-200 sm:mt-0 sm:col-span-2 px-3 pb-3 focus:outline-none border-zinc-300 transition " x-text="item.text"></textarea>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.time">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-6" x-show="activeTab === 'bills'">
+                    <div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h1 class="text-2xl font-semibold text-zinc-100">Väljastatud arved</h1>
+                        </div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            <!-- Replace with your content -->
+                            <!-- This example requires Tailwind CSS v2.0+ -->
+                            <ul class="divide-y divide-zinc-200">
+                                <li class="py-4">
+                                    <div class="flex flex-col mt-5">
+                                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                                <div class="shadow overflow-hidden border-b border-zinc-200 sm:rounded">
+                                                    <table class="min-w-full divide-y divide-zinc-200">
+                                                        <thead class="bg-zinc-900">
+                                                        <tr>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Saaja
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Saatja
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Summa
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Kirjeldus
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Arve saadetud
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="bg-zinc-800 divide-y divide-zinc-200" x-data="{items: []}"
+                                                            @update-bill-list.window="items = $event.detail.items">
+                                                        <template x-for="item in items" :key="item">
+                                                            <tr>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.name">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.sender">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="'$' + item.amount">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4">
+                                                                    <textarea readonly class="mt-1 bg-zinc-900 rounded text-sm text-zinc-200 sm:mt-0 sm:col-span-2 px-3 pb-3 focus:outline-none border-zinc-300 transition " x-text="item.reason"></textarea>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.days + ' Päeva tagasi'">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-6" x-show="activeTab === 'members'">
+                    <div id="rankList">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h1 class="text-2xl font-semibold text-zinc-100">Liikmed</h1>
+                        </div>
+
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            <!-- Replace with your content -->
+                            <!-- This example requires Tailwind CSS v2.0+ -->
+                            <ul class="divide-y divide-zinc-200">
+                                <li class="py-4">
+                                    <form class="space-y-8 divide-y divide-zinc-200">
+                                        <div class="space-y-8 divide-y divide-zinc-200">
+                                            <div>
+                                                <div>
+                                                    <h3 class="text-lg leading-6 font-medium text-zinc-100">
+                                                        Uue liikme kutsumine
+                                                    </h3>
+                                                    <p class="mt-1 text-sm text-zinc-500">
+                                                        Sisesta isikukood (leitav ID-kaardilt) ning isik kutsutakse fraktsiooni.
+                                                    </p>
+                                                </div>
+
+                                                <div class="bg-zinc-900 shadow sm:rounded mt-5">
+                                                    <div class="px-4 p-2">
+                                                        <div class="sm:flex sm:items-start sm:justify-between">
+                                                            <div class="max-w-xl text-lg text-zinc-500">
+                                                                <div>
+                                                                    <input id="companyInviteInput" type="number"
+                                                                    class="shadow-sm p-3 focus:ring-blue-500 bg-zinc-800 text-zinc-200 focus:border-blue-500 block w-full sm:text-sm border-zinc-700 rounded"
+                                                                           placeholder="Isikukood (PID)">
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-2 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
+                                                                <button id="sendJobInviteButton" type="button"
+                                                                        class="inline-flex items-center px-4 py-3 border border-transparent shadow-sm font-medium rounded text-white bg-sky-600 hover:bg-sky-700 sm:text-sm">
+                                                                        Kutsu
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </li>
+                                <li class="py-4">
+                                    <div class="flex flex-col mt-5">
+                                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                                <div class="shadow overflow-hidden border-b border-zinc-200 sm:rounded">
+                                                    <table class="min-w-full divide-y divide-zinc-200">
+                                                        <thead class="bg-zinc-900">
+                                                        <tr>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Info
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Auaste
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Viimati tööl
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Tegevused
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="bg-zinc-800 divide-y divide-zinc-200" x-data="{items: []}"
+                                                            @update-members.window="items = $event.detail.items">
+                                                        <template x-for="item in items" :key="item">
+                                                            <tr>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4"> 
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.name">
+                                                                            </div>
+
+                                                                            <div x-show="job === 'police'" class="text-sm font-medium text-zinc-100" x-text="item.serial">
+                                                                            </div>
+																			
+																			<div x-show="job === 'ambulance'" class="text-sm font-medium text-zinc-100" x-text="item.mserial">
+                                                                            </div>
+																			
+																		<div x-show="job === 'police'" class="text-sm font-medium text-zinc-100" x-text="item.bills">
+                                                                            </div>
+																			
+																		<div x-show="job === 'ambulance'" class="text-sm font-medium text-zinc-100" x-text="item.revives">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.job.grade_label">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.lastwork">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <button x-bind:character-id="item.identifier" id="changeUserRank" href="#" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">Muuda auastet</button>
+                                                                    <button x-bind:character-id="item.identifier" id="removeFromCompany" href="#" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-red-600 hover:bg-red-700">Vallanda</button>
+                                                                    <button x-show="job === 'police'" x-bind:character-id="item.identifier" id="changeUserSerial" href="#" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">Redigeeri ametitõendit</button>
+                                                                    <button x-show="job === 'ambulance'" x-bind:character-id="item.identifier" id="changeUserCallsign" href="#" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">Muuta kutsungit</button>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- More items... -->
+                            </ul>
+
+                            <!-- /End replace -->
+                        </div>
+                    </div>
+
+                    <div id="rankChanger">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            <!-- Replace with your content -->
+                            <!-- This example requires Tailwind CSS v2.0+ -->
+                            <ul class="divide-y divide-zinc-200">
+                                <li class="py-4" >
+                                    <div class="sm:flex sm:items-start sm:justify-between">
+                                        <div class="max-w-xl text-lg text-zinc-500">
+                
+                                        </div>
+                                        <div>
+                                            <button type="button"
+                                                    id="rankListBackFunction"
+                                                    class="mt-5 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">
+                                                Tagasi nimekirja
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col mt-2">
+                                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                                <div class="shadow overflow-hidden border-b border-zinc-200 sm:rounded">
+                                                    <table class="min-w-full divide-y divide-zinc-200">
+                                                        <thead class="bg-zinc-900">
+                                                        <tr>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Auaste
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Palk
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Tegevused
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="bg-zinc-800 divide-y divide-zinc-200" x-data="{items: []}"
+                                                            @update-promotable-ranks.window="items = $event.detail.items">
+                                                        <template x-for="item in items" :key="item">
+                                                            <tr>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.label">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="'$' + item.salary">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <button x-bind:rank-id="item.grade" id="rankChangeFull" href="#" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">Vali auaste</button>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-6" x-show="activeTab === 'vehicles'">
+                    <div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h1 class="text-2xl font-semibold text-zinc-100">Sõidukite soetamine</h1>
+                        </div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            <!-- Replace with your content -->
+                            <!-- This example requires Tailwind CSS v2.0+ -->
+                            <ul class="divide-y divide-zinc-200">
+                                <li class="py-4">
+                                    <div class="flex flex-col mt-5">
+                                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                                <div class="shadow overflow-hidden border-b border-zinc-200 sm:rounded">
+                                                    <table class="min-w-full divide-y divide-zinc-700">
+                                                        <thead class="bg-zinc-900">
+                                                        <tr>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Nimi
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Hind
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Tegevused
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="bg-zinc-800 divide-y divide-zinc-200" x-data="{items: []}"
+                                                            @update-buyable-vehicles.window="items = $event.detail.items">
+                                                        <template x-for="item in items" :key="item">
+                                                            <tr>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.name">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.price">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <button x-bind:car-id="item.model" id="buyCompanyVehicle" href="#" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">Soeta sõiduk</button>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <!-- /End replace -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-6" x-show="activeTab === 'ranks'">
+                    <div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h1 class="text-2xl font-semibold text-zinc-100">Auastmed</h1>
+                        </div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            <!-- Replace with your content -->
+                            <!-- This example requires Tailwind CSS v2.0+ -->
+                            <ul class="divide-y divide-zinc-200">
+                                <li class="py-4" id="rankCreation">
+                                    <form class="space-y-8 divide-y divide-zinc-200">
+                                        <div class="space-y-8 divide-y divide-zinc-200">
+                                            <div>
+                                                <div>
+                                                    <h3 class="text-lg  leading-6 font-medium text-zinc-100">
+                                                        Auastme lisamine
+                                                    </h3>
+                                                    <p class="mt-1 text-sm text-zinc-500">
+                                                        Sisesta auastme nimetus, ning see lisatakse listi.
+                                                    </p>
+                                                </div>
+
+                                                <div class="bg-zinc-900 shadow sm:rounded mt-5">
+                                                    <div class="px-4 p-2">
+                                                        <div class="sm:flex sm:items-start sm:justify-between">
+                                                            <div class="max-w-xl text-lg text-zinc-500">
+                                                                <div>
+                                                                    <input id="newRankName" 
+                                                                           class="shadow-sm p-3 focus:ring-blue-500 bg-zinc-800 text-zinc-200 focus:border-blue-500 block w-full sm:text-sm border-zinc-700 rounded"
+                                                                           placeholder="Auastme nimetus">
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-2 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
+                                                                <button id="createNewRank" type="button"
+                                                                        class="inline-flex items-center px-4 py-3 border border-transparent shadow-sm font-medium rounded text-white bg-sky-600 hover:bg-sky-700 sm:text-sm">
+                                                                        Loo auaste
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </li>
+
+                                <li class="py-4" id="rankListSection">
+                                    <div class="flex flex-col mt-5">
+                                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                                <div class="shadow overflow-hidden border-b border-zinc-200 sm:rounded">
+                                                    <table class="min-w-full divide-y divide-zinc-200">
+                                                        <thead class="bg-zinc-900">
+                                                        <tr>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Auaste
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Palk
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Rank
+                                                            </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-zinc-200 uppercase tracking-wider">
+                                                                Tegevused
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="bg-zinc-800 divide-y divide-zinc-200" x-data="{items: []}"
+                                                               @update-all-ranks.window="items = $event.detail.items">
+                                                        <template x-for="item in items" :key="item">
+                                                            <tr>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.label">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="'$' + item.salary">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <div class="flex items-center">
+                                                                        <div class="ml-4">
+                                                                            <div class="text-sm font-medium text-zinc-100" x-text="item.grade">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                                    <button type="button"
+                                                                    @click="selectedEditingGradeId = item.grade"
+                                                                    x-bind:rank-id="item.grade"
+                                                                    id="editRankButton" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">Redigeeri</button>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                
+                
+                                                        <!-- More items... -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li id="editRankSection" class="py-4" style="display:none">
+                                    <div>
+                                        <label for="price" class="block text-sm font-medium text-zinc-200">Palk</label>
+                                        <div class="mt-1 relative rounded shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                          <span class="text-zinc-500 sm:text-sm">
+                                            $
+                                          </span>
+                                            </div>
+                                            <input min="0" max="100000" type="number" id="rankSalaryInput"
+                                                   class="focus:ring-blue-500 focus:border-blue-500 block w-full bg-zinc-900 text-zinc-200 pl-7 pr-12 leading-8 border-zinc-300 rounded"
+                                                   placeholder="0" aria-describedby="price-currency">
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                          <span class="text-zinc-500 sm:text-sm" id="price-currency">
+                                            USD
+                                          </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pb-1 mb-2 border-b border-zinc-200 mt-5">
+                                        <h3 class="text-lg leading-6 font-medium text-zinc-100 mt-7">
+                                            Tahvelarvuti
+                                        </h3>
+                                    </div>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Liidri menüü</span>
+                                            <span class="text-sm text-zinc-500">Ligipääs fraktsiooni liidri tahvelarvutile.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="leaderMenu"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Liikmete vaatamine</span>
+                                            <span class="text-sm text-zinc-500">Võimalus vaadata 'Liikmed' lehte.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="members"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Auastmete redigeerimine</span>
+                                            <span class="text-sm text-zinc-500">Võimalus vaadata 'Auastmed' lehte.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="ranks"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Raha haldamine</span>
+                                            <span class="text-sm text-zinc-500">Võimalus vaadata 'Sõidukid' lehte ja pangas tegeleda rahandusega.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="banking"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <div class="pb-1 mb-2 border-b border-zinc-200 mt-5">
+                                        <h3 class="text-lg leading-6 font-medium text-zinc-100">
+                                            Töö tegevused
+                                        </h3>
+                                    </div>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Ligipääs seifile</span>
+                                            <span class="text-sm text-zinc-500">Fraktsiooni lao avamine, hoiustamine ja asjade võtmine.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="stash"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Fraktsiooni garaaz</span>
+                                            <span class="text-sm text-zinc-500">Fraktsiooni sõidukite väljastamine, ning hoiustamine.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="garage"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Töö menüü</span>
+                                            <span class="text-sm text-zinc-500">Fraktsioonile määratud töö menüü kasutamine.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="jobMenu"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <ul class="divide-y divide-zinc-200 ml-3">
+                                        <li class="py-4">
+                                            <div class="flex items-center justify-between" x-data="{ on: false }">
+                                          <span class="flex-grow flex flex-col">
+                                            <span class="text-sm font-medium text-zinc-100">Printer</span>
+                                            <span class="text-sm text-zinc-500">Fraktsioonile määratud printeri kasutusõigus.</span>
+                                          </span>
+                                                <!-- Enabled: "bg-blue-600", Not Enabled: "bg-zinc-200" -->
+                                                <button type="button"
+                                                        rank-property-name="printer"
+                                                        x-bind:value="on"
+                                                        :class="{ 'bg-blue-600': on, 'bg-zinc-200': !(on) }"
+                                                        class="bg-zinc-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                                                        aria-pressed="false" aria-labelledby="availability-label" @click="on = !on">
+
+                                                    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                                    <span aria-hidden="true"
+                                                          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-zinc-800 shadow transform ring-0 transition ease-in-out duration-200"
+                                                          :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <div class="sm:flex sm:items-start sm:justify-between">
+                                        <div class="max-w-xl text-lg text-zinc-500 mt-2"></div>
+
+                                        <div>
+                                            <button type="button"
+                                                    id="deleteCurrentRank"
+                                                    class="mt-5 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded shadow-sm text-white bg-red-600 hover:bg-red-700">
+                                                Kustuta aste
+                                            </button>
+                                            <button type="button"
+                                                    id="backToRankListButton"
+                                                    class="mt-5 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">
+                                                Tagasi nimekirja
+                                            </button>
+                                            <button type="button"
+                                                    id="saveRankButton"
+                                                    class="mt-5 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded shadow-sm text-white bg-sky-600 hover:bg-sky-700">
+                                                Salvesta
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- More items... -->
+                            </ul>
+                            <!-- /End replace -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

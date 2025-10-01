@@ -1,0 +1,96 @@
+body, html {
+  width: 100%;
+  height: 100%;
+
+  font-family: 'Times New Roman', Times, serif;
+  font-size: large;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+  color: black;
+}
+
+#id-card {
+  display: none;
+  position: relative;
+  margin: 230px 50px 0 0;
+  float: right;
+  width: 540px;
+  height: 321px;
+  padding: 84px 17px 10px 120px;
+  background: url("../images/idcard.png");
+}
+
+img {
+  position: absolute;
+  margin-top: -15px;
+  margin-left: -115px;
+  z-index: -1;
+  width: 135px;
+  height: 155px
+}
+
+#firstname {
+  margin-top: 22px;
+  margin-left: 1.8rem;
+
+  font-size: 13px;
+}
+
+#lastname {
+  margin-top: 15px;
+  margin-left: 1.8rem;
+
+  font-size: 13px;
+}
+
+#dob {
+  margin-top: 14px;
+  margin-left: 1.8rem;
+
+  font-size: 13px;
+}
+
+#sex {
+  margin-top: 13px;
+  margin-left: 1.8rem;
+
+  font-size: 13px;
+}
+
+#doe {
+  position: absolute;
+  margin-top: -1px;
+  margin-left: 3.6rem;
+
+  font-size: 13px;
+}
+
+#pid {
+  margin-top: -35px;
+  margin-left: 15.5rem;
+
+  font-size: 13px;
+}
+
+#dmv {
+  margin-top: 80.5px;
+  margin-left: 12rem;
+
+  font-size: 13px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+
+#signature {
+  position: absolute;
+  font-family: 'Gochi Hand', cursive;
+
+  margin-top: -55px;
+  margin-left: -6rem;
+
+  font-size: 20px;
+}

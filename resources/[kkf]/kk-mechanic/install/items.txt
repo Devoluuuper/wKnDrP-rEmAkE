@@ -1,0 +1,1072 @@
+
+	-- kk-mechanic
+	['brakes_1'] = {
+		label = 'Pidurid LVL1',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_2'] = {
+		label = 'Pidurid LVL2',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_3'] = {
+		label = 'Pidurid LVL3',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_4'] = {
+		label = 'Pidurid LVL4',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_5'] = {
+		label = 'Pidurid LVL5',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['engine_1'] = {
+		label = 'Mootor LVL1',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['engine_2'] = {
+		label = 'Mootor LVL2',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['engine_3'] = {
+		label = 'Mootor LVL3',
+		weight = 200,
+		stack = false,
+		close = 0,
+		description = ''
+	},
+
+	['engine_4'] = {
+		label = 'Mootor LVL4',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['engine_5'] = {
+		label = 'Mootor LVL5',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['suspension_1'] = {
+		label = 'Vedrustus LVL1',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['suspension_2'] = {
+		label = 'Vedrustus LVL2',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['suspension_3'] = {
+		label = 'Vedrustus LVL3',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['suspension_4'] = {
+		label = 'Vedrustus LVL4',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['suspension_5'] = {
+		label = 'Vedrustus LVL4',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_1'] = {
+		label = 'Käigukast LVL1',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_2'] = {
+		label = 'Käigukast LVL2',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_3'] = {
+		label = 'Käigukast LVL3',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_4'] = {
+		label = 'Käigukast LVL4',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_5'] = {
+		label = 'Käigukast LVL5',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['turbo_1'] = {
+		label = 'Turbo',
+		weight = 200,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = ''
+	},	
+
+	-- Meha varuosad
+
+	-- S
+
+	['fuel_injector_s'] = {
+		label = 'Kütusepihusti',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['radiator_s'] = {
+		label = 'Radiaator',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['axle_s'] = {
+		label = 'Teljed',
+		weight = 15000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_s'] = {
+		label = 'Käigukast',
+		weight = 20000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['electronics_s'] = {
+		label = 'Elektroonika',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_s'] = {
+		label = 'Pidurid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['clutch_s'] = {
+		label = 'Sidur',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['tire_s'] = {
+		label = 'Rehvid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	-- A
+
+	['fuel_injector_a'] = {
+		label = 'Kütusepihusti',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['radiator_a'] = {
+		label = 'Radiaator',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['axle_a'] = {
+		label = 'Teljed',
+		weight = 15000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_a'] = {
+		label = 'Käigukast',
+		weight = 20000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['electronics_a'] = {
+		label = 'Elektroonika',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_a'] = {
+		label = 'Pidurid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['clutch_a'] = {
+		label = 'Sidur',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['tire_a'] = {
+		label = 'Rehvid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	-- B
+
+	['fuel_injector_b'] = {
+		label = 'Kütusepihusti',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['radiator_b'] = {
+		label = 'Radiaator',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['axle_b'] = {
+		label = 'Teljed',
+		weight = 15000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_b'] = {
+		label = 'Käigukast',
+		weight = 20000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['electronics_b'] = {
+		label = 'Elektroonika',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_b'] = {
+		label = 'Pidurid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['clutch_b'] = {
+		label = 'Sidur',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['tire_b'] = {
+		label = 'Rehvid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	-- C
+	['fuel_injector_c'] = {
+		label = 'Kütusepihusti',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['radiator_c'] = {
+		label = 'Radiaator',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['axle_c'] = {
+		label = 'Teljed',
+		weight = 15000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_c'] = {
+		label = 'Käigukast',
+		weight = 20000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['electronics_c'] = {
+		label = 'Elektroonika',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_c'] = {
+		label = 'Pidurid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['clutch_c'] = {
+		label = 'Sidur',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['tire_c'] = {
+		label = 'Rehvid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	-- D
+
+	['fuel_injector_d'] = {
+		label = 'Kütusepihusti',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['radiator_d'] = {
+		label = 'Radiaator',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['axle_d'] = {
+		label = 'Teljed',
+		weight = 15000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_d'] = {
+		label = 'Käigukast',
+		weight = 20000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['electronics_d'] = {
+		label = 'Elektroonika',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_d'] = {
+		label = 'Pidurid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['clutch_d'] = {
+		label = 'Sidur',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['tire_d'] = {
+		label = 'Rehvid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	-- M
+
+	['fuel_injector_m'] = {
+		label = 'Kütusepihusti',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['radiator_m'] = {
+		label = 'Radiaator',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['axle_m'] = {
+		label = 'Teljed',
+		weight = 15000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['transmission_m'] = {
+		label = 'Käigukast',
+		weight = 20000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['electronics_m'] = {
+		label = 'Elektroonika',
+		weight = 5000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['brakes_m'] = {
+		label = 'Pidurid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['clutch_m'] = {
+		label = 'Sidur',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	['tire_m'] = {
+		label = 'Rehvid',
+		weight = 10000,
+		stack = true,
+		consume = 0,
+		close = 0,
+		description = ''
+	},
+
+	-- S kategooria
+	['fuel_injector_s_box'] = {
+		label = 'Kütusepihusti S',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Pihustab kütust mootorisse (S-tase).'
+	},
+
+	['radiator_s_box'] = {
+		label = 'Radiaator S',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Jahutab mootorit (S-tase).'
+	},
+
+	['axle_s_box'] = {
+		label = 'Telg',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab ja toetab rattaid (S-tase).'
+	},
+
+	['transmission_s_box'] = {
+		label = 'Käigukast S',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Edastab mootori võimsust ratastele (S-tase).'
+	},
+
+	['electronics_s_box'] = {
+		label = 'Elektroonika S',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Kontrollib elektroonikat (S-tase).'
+	},
+
+	['brakes_s_box'] = {
+		label = 'Pidurid S',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Peatab sõiduki (S-tase).'
+	},
+
+	['clutch_s_box'] = {
+		label = 'Sidur S',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab mootori käigukastiga (S-tase).'
+	},
+
+	['tire_s_box'] = {
+		label = 'Rehv S',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Tagab haarduvuse teega (S-tase).'
+	},
+
+	-- A kategooria
+	['fuel_injector_a_box'] = {
+		label = 'Kütusepihusti A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Pihustab kütust mootorisse (A-tase).'
+	},
+
+	['radiator_a_box'] = {
+		label = 'Radiaator A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Jahutab mootorit (A-tase).'
+	},
+
+	['axle_a_box'] = {
+		label = 'Telg A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab ja toetab rattaid (A-tase).'
+	},
+
+	['transmission_a_box'] = {
+		label = 'Käigukast A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Edastab võimsust ratastele (A-tase).'
+	},
+
+	['electronics_a_box'] = {
+		label = 'Elektroonika A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Kontrollib elektroonikat (A-tase).'
+	},
+
+	['brakes_a_box'] = {
+		label = 'Pidurid A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Peatab sõiduki (A-tase).'
+	},
+
+	['clutch_a_box'] = {
+		label = 'Sidur A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab mootori ja käigukasti (A-tase).'
+	},
+
+	['tire_a_box'] = {
+		label = 'Rehv A',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Tagab haarduvuse teega (A-tase).'
+	},
+
+	-- B kategooria
+	['fuel_injector_b_box'] = {
+		label = 'Kütusepihusti B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Pihustab kütust mootorisse (B-tase).'
+	},
+
+	['radiator_b_box'] = {
+		label = 'Radiaator B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Jahutab mootorit (B-tase).'
+	},
+
+	['axle_b_box'] = {
+		label = 'Telg B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab ja toetab rattaid (B-tase).'
+	},
+
+	['transmission_b_box'] = {
+		label = 'Käigukast B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Edastab võimsust ratastele (B-tase).'
+	},
+
+	['electronics_b_box'] = {
+		label = 'Elektroonika B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Kontrollib elektroonikat (B-tase).'
+	},
+
+	['brakes_b_box'] = {
+		label = 'Pidurid B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Peatab sõiduki (B-tase).'
+	},
+
+	['clutch_b_box'] = {
+		label = 'Sidur B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab mootori ja käigukasti (B-tase).'
+	},
+
+	['tire_b_box'] = {
+		label = 'Rehv B',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Tagab haarduvuse teega (B-tase).'
+	},
+
+	-- C kategooria
+	['fuel_injector_c_box'] = {
+		label = 'Kütusepihusti C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Pihustab kütust mootorisse (C-tase).'
+	},
+
+	['radiator_c_box'] = {
+		label = 'Radiaator C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Jahutab mootorit (C-tase).'
+	},
+
+	['axle_c_box'] = {
+		label = 'Telg C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab ja toetab rattaid (C-tase).'
+	},
+
+	['transmission_c_box'] = {
+		label = 'Käigukast C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Edastab võimsust ratastele (C-tase).'
+	},
+
+	['electronics_c_box'] = {
+		label = 'Elektroonika C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Kontrollib elektroonikat (C-tase).'
+	},
+
+	['brakes_c_box'] = {
+		label = 'Pidurid C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Peatab sõiduki (C-tase).'
+	},
+
+	['clutch_c_box'] = {
+		label = 'Sidur C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab mootori ja käigukasti (C-tase).'
+	},
+
+	['tire_c_box'] = {
+		label = 'Rehv C',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Tagab haarduvuse teega (C-tase).'
+	},
+
+	-- D kategooria
+	['fuel_injector_d_box'] = {
+		label = 'Kütusepihusti D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Pihustab kütust mootorisse (D-tase).'
+	},
+
+	['radiator_d_box'] = {
+		label = 'Radiaator D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Jahutab mootorit (D-tase).'
+	},
+
+	['axle_d_box'] = {
+		label = 'Telg D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab ja toetab rattaid (D-tase).'
+	},
+
+	['transmission_d_box'] = {
+		label = 'Käigukast D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Edastab võimsust ratastele (D-tase).'
+	},
+
+	['electronics_d_box'] = {
+		label = 'Elektroonika D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Kontrollib elektroonikat (D-tase).'
+	},
+
+	['brakes_d_box'] = {
+		label = 'Pidurid D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Peatab sõiduki (D-tase).'
+	},
+
+	['clutch_d_box'] = {
+		label = 'Sidur D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab mootori ja käigukasti (D-tase).'
+	},
+
+	['tire_d_box'] = {
+		label = 'Rehv D',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Tagab haarduvuse teega (D-tase).'
+	},
+
+	-- M kategooria
+	['fuel_injector_m_box'] = {
+		label = 'Kütusepihusti M',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Pihustab kütust mootorisse (M-tase).'
+	},
+
+	['radiator_m_box'] = {
+		label = 'Radiaator M',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Jahutab mootorit (M-tase).'
+	},
+
+	['axle_m_box'] = {
+		label = 'Telg M',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab ja toetab rattaid (M-tase).'
+	},
+
+	['transmission_m_box'] = {
+		label = 'Käigukast M',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Edastab võimsust ratastele (M-tase).'
+	},
+
+	['electronics_m_box'] = {
+		label = 'Elektroonika M',
+		weight = 5000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Kontrollib elektroonikat (M-tase).'
+	},
+
+	['brakes_m_box'] = {
+		label = 'Pidurid M',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Peatab sõiduki (M-tase).'
+	},
+
+	['clutch_m_box'] = {
+		label = 'Sidur M',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Ühendab mootori ja käigukasti (M-tase).'
+	},
+
+	['tire_m_box'] = {
+		label = 'Rehv M',
+		weight = 50000,
+		stack = false,
+		consume = 0,
+		close = 0,
+		description = 'Tagab haarduvuse teega (M-tase).'
+	},
