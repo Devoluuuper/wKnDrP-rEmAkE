@@ -1,6 +1,0 @@
--- CreateThread(function()
---     for i = 0, 1000 do 
---         SetRoutingBucketEntityLockdownMode(i, 'relaxed')
---         SetRoutingBucketPopulationEnabled(i, true)
---     end
--- end)
