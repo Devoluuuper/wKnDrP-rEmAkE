@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <title>KKasutaja Admin</title>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+		/* Track */
+		::-webkit-scrollbar-track {
+			background: #3F3F46;
+		}
+		
+		/* Handle */
+		::-webkit-scrollbar-thumb {
+			background: #1e1e1f ;
+		}
+
+		/* Handle on hover */
+		::-webkit-scrollbar-thumb:hover {
+			background: #141414;
+		}
+
+        @keyframes blinker {
+            50% {
+                background-color: blue;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="adminAlert" class="absolute w-full hidden">
+        <div class="flex justify-between shadow text-white text-bold text-xl rounded p-2 m-1.5 bg-red-700" style="animation: blinker 1s linear infinite;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-auto mb-auto w-16 h-16">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+        
+            <p id="adminAlertMessage" class="mt-auto mb-auto ml-1">Suur jama!</p>
+    
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-auto mb-auto w-16 h-16">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+        </div>
+    </div>
+
+    <div id="spectating" class="hidden">
+        <div id="playerInfo" class="absolute top-80 left-5">
+            <div class="flex gap-1">
+                <div x-data="{toggle: false}">
+                    <div x-on:click="toggle = !toggle" class="w-min bg-sky-700 bg-opacity-95 px-2 py-1 text-center text-white mb-1 rounded shadow font-medium">TULP1</div>
+
+                    <div x-show="!toggle" class="h-min w-96 bg-zinc-900 bg-opacity-95 text-zinc-300 p-2 rounded border shadow border-1 border-zinc-700 mb-1"> 
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>ID:</b> <p id="spectaticeSource" class="float-right">3</p>
+                        </li>
+
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Steam:</b> <p id="spectaticeSteam" class="float-right">Pets</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Steam ID:</b> <p id="spectaticeSteamId" class="float-right">4</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>PID:</b> <p id="spectaticeIdentifier" class="float-right">23</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Nimi:</b> <p id="spectaticeName" class="float-right">Suur Papa</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Töö:</b> <p id="spectaticeJob" class="float-right">Võmm</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Duty:</b> <p id="spectaticeDuty" class="float-right">EI</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Elud:</b> <p id="spectaticeHealth" class="float-right">100/200</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4">
+                            <b>Kuulivest:</b> <p id="spectaticeVest" class="float-right">100/100</p>
+                        </li>
+                    </div>
+
+                    <div x-show="!toggle" class="h-min w-96 bg-zinc-900 bg-opacity-95 text-zinc-300 p-2 rounded border shadow border-1 border-zinc-700 mb-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <h1 class="text-xl font-medium mb-1">Märkmed</h1>
+        
+                            <button id="saveSpectaticeNotes" class="bg-green-700 hover:bg-green-800 text-white px-2 py-1 rounded shadow">Salvesta</button>
+                        </div>
+        
+                        <textarea id="spectaticeNotes" maxlength="535" class="w-full h-40 bg-transparent border border-zinc-700 shadow rounded p-2 resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div x-data="{toggle: false}">
+                    <div x-on:click="toggle = !toggle" class="w-min bg-sky-700 bg-opacity-95 px-2 py-1 text-center text-white mb-1 rounded shadow font-medium">TULP2</div>
+
+                    <div x-show="!toggle" id="spectaticeVehicleData" class="h-min w-96 bg-zinc-900 bg-opacity-95 text-zinc-300 p-2 rounded border shadow border-1 border-zinc-700 mb-1">
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Sõiduk:</b> <p id="spectaticeModel" class="float-right">Kuruma</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>REG.NR:</b> <p id="spectaticePlate" class="float-right">HUUH1234</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Elud:</b> <p id="spectaticeVehicleHealth" class="float-right">1000</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4 border-b border-zinc-700">
+                            <b>Kütus:</b> <p id="spectaticeFuel" class="float-right">34</p>
+                        </li>
+    
+                        <li class="relative block py-2 px-4">
+                            <b>Kiirus:</b> <p id="spectaticeSpeed" class="float-right">100 km/h</p>
+                        </li>
+                    </div>
+
+                    <div x-show="!toggle" class="w-96 h-96 overflow-y-auto rounded border border-zinc-700 bg-zinc-900 bg-opacity-95">
+                        <table class="table-fixed w-full mb-1 shadow divide-y divide-zinc-700 shadow text-zinc-300 rounded">
+                            <thead>
+                                <tr>
+                                    <th class="p-2">Tüüp</th>
+                                    <th class="p-2">Kestus</th>
+                                    <th class="p-2">Admin</th>
+                                    <th class="p-2">Kuupäev</th>
+                                </tr>
+                            </thead>
+            
+                            <tbody id="spectativePunishments" class="divide-y divide-zinc-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 flex w-full justify-center p-5">
+            <div class="flex justify-around gap-5">
+                <div class="w-14 h-14 flex text-zinc-200 bg-zinc-900 text-center bg-opacity-95 border rounded-full border-zinc-700">
+                    <svg id="selectPrevious" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="flex w-10 h-10 cursor-pointer m-auto">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </div>
+
+                <div class="block">
+                    <div id="leaveSpectate" class="w-14 h-14 flex text-zinc-200 bg-zinc-900 text-center bg-opacity-95 border rounded-full border-zinc-700 mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="flex w-10 h-10 cursor-pointer m-auto">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+
+                    <div id="teleportToSpectative" class="w-14 h-14 flex text-zinc-200 bg-zinc-900 text-center bg-opacity-95 border rounded-full border-zinc-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="flex w-10 h-10 cursor-pointer m-auto">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
+                        </svg>  
+                    </div>
+                </div>
+
+                <div class="w-14 h-14 flex text-zinc-200 bg-zinc-900 text-center bg-opacity-95 border rounded-full border-zinc-700">
+                    <svg id="selectNext" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="flex w-10 h-10 cursor-pointer m-auto">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminMenu" class="hidden">
+        <div 
+            id="container" 
+            x-data="{activePage: 'options', adminMode: false}" class="fixed right-0 h-full w-96 bg-zinc-300 dark:bg-zinc-800 dark:text-white shadow flex"
+        >
+            <div id="sidebar" class="h-full w-14 p-2 bg-zinc-400 border-zinc-600 dark:bg-zinc-900 border-r dark:border-zinc-700 dark:text-zinc-300">
+                <button 
+                    x-on:click="adminMode = !adminMode; setAdminMode(adminMode)" 
+                    class="hover:bg-zinc-500 dark:bg-zinc-800 border dark:border-zinc-700 dark:hover:bg-zinc-700 shadow rounded text-center p-1 mt-1"
+                >
+                    <svg x-show="!adminMode" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+
+                    <svg x-show="adminMode" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <script>
+                    function setAdminMode(value) {
+                        $.post('https://kk-admin2/adminMode', JSON.stringify({status: value}))
+                    }
+                </script>
+
+                <button 
+                    x-show="adminMode"
+                    x-on:click="activePage = 'options'" 
+                    class="hover:bg-zinc-500 dark:bg-zinc-800 border dark:border-zinc-700 dark:hover:bg-zinc-700 shadow rounded text-center p-1 mt-1"
+                    :class="{'bg-zinc-500 dark:bg-zinc-700 dark:border-zinc-800': activePage === 'options'}"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                    </svg>
+                </button>
+
+                <button
+                    x-show="adminMode"
+                    x-on:click="activePage = 'players'" 
+                    class="hover:bg-zinc-500 dark:bg-zinc-800 border dark:border-zinc-700 dark:hover:bg-zinc-700 shadow rounded text-center p-1 mt-1"
+                    :class="{'bg-zinc-500 dark:bg-zinc-700 dark:border-zinc-800': activePage === 'players'}"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>                  
+                </button>
+            </div>
+
+            <div id="adminTools" class="p-2 h-full w-full overflow-y-auto">
+                <h1 x-show="!adminMode" class="text-center text-xl">Admin mode on välja lülitatud!</h1>
+
+                <div x-show="adminMode">
+                    <div 
+                        x-show="activePage === 'options'"
+                        class="h-full"
+                        x-transition:enter="transition ease-out duration-500" 
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                    >
+                    <div id="actions" class="h-full">
+                        <div id="adminKeysContainer">
+                            <div class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded">
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-yellow-500">Võta võtmed</span>
+    
+                                    <button id="adminKeys" class="text-white rounded shadow bg-sky-700 hover:bg-sky-800 focus:outline-none cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="noclip">
+                            <div class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded">
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-yellow-500">Noclip</span>
+    
+                                    <button id="activateNoclip" class="text-white rounded shadow bg-sky-700 hover:bg-sky-800 focus:outline-none cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="playerBlipsContainer">
+                            <div class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded">
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-yellow-500">Player blips</span>
+    
+                                    <button id="playerBlips" class="text-white rounded shadow bg-sky-700 hover:bg-sky-800 focus:outline-none cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="playerNamesContainer">
+                            <div class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded">
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-yellow-500">Player overhead names</span>
+    
+                                    <button id="playerNames" class="text-white rounded shadow bg-sky-700 hover:bg-sky-800 focus:outline-none cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminVehicleFixContainer">
+                            <div class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded">
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-yellow-500">Paranda sõiduk</span>
+    
+                                    <button id="adminVehicleFix" class="text-white rounded shadow bg-sky-700 hover:bg-sky-800 focus:outline-none cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminVehicleFuelContainer">
+                            <div class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded">
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-yellow-500">Tangi sõiduk</span>
+    
+                                    <button id="adminVehicleFuel" class="text-white rounded shadow bg-sky-700 hover:bg-sky-800 focus:outline-none cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="teleportToMarkerContainer">
+                            <div class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded">
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-yellow-500">Teleporti markeri juurde</span>
+    
+                                    <button id="teleportToMarker" class="text-white rounded shadow bg-sky-700 hover:bg-sky-800 focus:outline-none cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="requestSpectateContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-red-500">Mängija jälgimine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="requestSpectateTarget" class="font-medium">Mängija</label>
+                                    <select id="requestSpectateTarget" name="requestSpectateTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="requestSpectate" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Alusta jälgimist
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="requestScreenshotC">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-red-500">Screenshot</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="requestScreenshotTarget" class="font-medium">Mängija</label>
+                                    <select id="requestScreenshotTarget" name="requestScreenshotTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="requestScreenshot" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Tee pilt
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="teleportToContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-red-500">Teleporti mängija juurde</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="teleportToTarget" class="font-medium">Mängija</label>
+                                    <select id="teleportToTarget" name="teleportToTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="teleportTo" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Teleporti
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="checkInventoryContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-green-500">Mängija inventory kontrollimine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="checkInventoryTarget" class="font-medium">Mängija</label>
+                                    <select id="checkInventoryTarget" name="checkInventoryTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="checkInventory" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Vaata inventory
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="teleportToMeContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-red-500">Teleporti mängija enda juurde</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="teleportToMeTarget" class="font-medium">Mängija</label>
+                                    <select id="teleportToMeTarget" name="teleportToMeTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="teleportToMe" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Teleporti
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="freezePlayerContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-sky-500">Freeze mängija</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="freezePlayerTarget" class="font-medium">Mängija</label>
+                                    <select id="freezePlayerTarget" name="freezePlayerTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <div class="flex justify-between mt-1">
+                                        <div class="flex items-center">
+                                            <input checked id="freezePlayerOn" type="radio" value="on" name="freeze-radio" class="w-4 h-4 bg-zinc-700 border-zinc-600">
+                                            <label for="freezePlayerOn" class="font-medium ml-2">ON</label>
+                                        </div>
+
+                                        <div class="flex items-center">
+                                            <label for="freezePlayerOff" class="font-medium mr-2">OFF</label>
+                                            <input id="freezePlayerOff" type="radio" value="off" name="freeze-radio" class="w-4 h-4 bg-zinc-700 border-zinc-600">
+                                        </div>
+                                    </div>
+
+                                    <button id="freezePlayer" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Freeze
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="kickPlayerContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-sky-500">Kickimine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="kickTarget" class="font-medium">Mängija</label>
+                                    <select id="kickTarget" name="kickTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <label for="kickReason" class="font-medium">Põhjus</label>
+                                    <input id="kickReason" name="kickReason" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="kickPlayer" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Kicki
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminJail">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-sky-500">Admin jail</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="jailTarget" class="font-medium">Mängija</label>
+                                    <select id="jailTarget" name="jailTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <label for="jailTime" class="font-medium">Aeg (minutites)</label>
+                                    <input id="jailTime" name="jailTime" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="jailPerson" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Vangista
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="banPlayerContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-sky-500">Serverist keelustamine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="onlineBanTarget" class="font-medium">Mängija</label>
+                                    <select id="onlineBanTarget" name="onlineBanTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <label for="onlineBanTime" class="font-medium">Kestus (päevades) (0 = permanent)</label>
+                                    <input id="onlineBanTime" name="onlineBanTime" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <label for="onlineBanReason" class="font-medium">Põhjus</label>
+                                    <input id="onlineBanReason" name="onlineBanReason" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="onlineBanPlayer" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Keelusta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="offlineBanPlayerContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium text-sky-300">Offline serverist keelustamine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="offlineBanTarget" class="font-medium">PID</label>
+                                    <input id="offlineBanTarget" name="offlineBanTarget" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <label for="offlineBanTime" class="font-medium">Kestus (päevades) (0 = permanent)</label>
+                                    <input id="offlineBanTime" name="offlineBanTime" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <label for="offlineBanReason" class="font-medium">Põhjus</label>
+                                    <input id="offlineBanReason" name="offlineBanReason" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="offlineBanPlayer" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Keelusta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="unjail">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Jailist eemaldamine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="unjailRealTarget" class="font-medium">Mängija</label>
+                                    <select id="unjailRealTarget" name="unjailRealTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="unjailRealPerson" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Eemalda vangistus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminUnjail">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Admin jailist eemaldamine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="unjailTarget" class="font-medium">Mängija</label>
+                                    <select id="unjailTarget" name="jailTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="unjailPerson" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Eemalda vangistus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="unbanPlayerContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Keelustamise eemaldamine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="unbanTarget" class="font-medium">BAN ID</label>
+                                    <input id="unbanTarget" name="unbanTarget" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="unbanPlayer" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Eemalda
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="revive">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Mängija elustamine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="reviveTarget" class="font-medium">Mängija</label>
+                                    <select id="reviveTarget" name="reviveTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="revivePerson" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Elusta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="giveAccountContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Anna kontole</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="giveAccountTarget" class="font-medium">Mängija</label>
+                                    <select id="giveAccountTarget" name="giveAccountTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <label for="giveAccountType" class="font-medium">Tüüp</label>
+                                    <select id="giveAccountType" name="giveAccountType" class="focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="bank">Pank</option>
+                                        <option value="money">Sularaha</option>
+                                    </select>
+
+                                    <label for="giveAccountCount" class="font-medium">Summa</label>
+                                    <input id="giveAccountCount" name="giveAccountCount" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="giveAccount" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Anna kontole
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="removeAccountContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Eemalda kontolt</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="removeAccountTarget" class="font-medium">Mängija</label>
+                                    <select id="removeAccountTarget" name="removeAccountTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <label for="removeAccountType" class="font-medium">Tüüp</label>
+                                    <select id="removeAccountType" name="removeAccountType" class="focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="bank">Pank</option>
+                                        <option value="money">Sularaha</option>
+                                    </select>
+
+                                    <label for="removeAccountCount" class="font-medium">Summa</label>
+                                    <input id="removeAccountCount" name="removeAccountCount" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="removeAccount" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Eemalda kontolt
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="slayPlayerContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Mängija tapmine</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="slayPlayerTarget" class="font-medium">Mängija</label>
+                                    <select id="slayPlayerTarget" name="slayPlayerTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="slayPlayer" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Slay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="addFactionContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Lisa mängijale fraktsioon</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="addFactionTarget" class="font-medium">Mängija</label>
+                                    <select id="addFactionTarget" name="addFactionTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <label for="addFactionName" class="font-medium">Fraktsioon</label>
+                                    <input id="addFactionName" name="addFactionName" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <label for="addFactionGrade" class="font-medium">Auaste</label>
+                                    <input id="addFactionGrade" name="addFactionGrade" type="number" value="99" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="addFaction" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Lisa fraktsioon
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="skinMenuContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Riietemenüü</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="skinMenuTarget" class="font-medium">Mängija</label>
+                                    <select id="skinMenuTarget" name="skinMenuTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="skinMenu" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Ava menüü
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="itemGiving">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Anna esemeid</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="giveItemTarget" class="font-medium">Mängija</label>
+                                    <select id="giveItemTarget" name="giveItemTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <label for="giveItemName" class="font-medium">Ese</label>
+                                    <input id="giveItemName" name="giveItemName" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <label for="giveItemCount" class="font-medium">Kogus</label>
+                                    <input id="giveItemCount" name="giveItemCount" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="giveItem" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Anna ese
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="clearInventoryContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Tühjenda inventory</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="clearInventoryTarget" class="font-medium">Mängija</label>
+                                    <select id="clearInventoryTarget" name="clearInventoryTarget" class="playersOption focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="102">(102) Jamal Jackson</option>
+                                        <option value="213">(213) Rodrigo Rodriques</option>
+                                    </select>
+
+                                    <button id="clearInventory" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Tühjenda
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="clearOfflineInventoryContainer">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Tühjenda offline inventory</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="clearOfflineInventoryTarget" class="font-medium">PID</label>
+                                    <input id="clearOfflineInventoryTarget" name="clearOfflineInventoryTarget" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="clearOfflineInventory" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Tühjenda
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="entitySpawning">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Tekita entity</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="spawnEntityType" class="font-medium">Entity</label>
+                                    <select id="spawnEntityType" name="spawnEntityType" class="focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="vehicle">Sõiduk</option>
+                                        <option value="object">Objekt</option>
+                                        <option value="plate">Omatud sõiduk</option>
+                                    </select>
+
+                                    <label for="spawnEntityArgument" class="font-medium">Mudel / REG.NR</label>
+                                    <input id="spawnEntityArgument" name="spawnEntityArgument" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="spawnEntity" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Tekita entity
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="deleteSpawning">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Delete entity</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="deleteEntityType" class="font-medium">Entity</label>
+                                    <select id="deleteEntityType" name="deleteEntityType" class="focus:outline-none h-8 mt-1 w-full px-2 bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+                                        <option value="vehicle">Sõiduk</option>
+                                        <option value="object">Objekt</option>
+                                        <option value="ped">Ped</option>
+                                    </select>
+
+                                    <label for="deleteEntityRadius" class="font-medium">Raadius</label>
+                                    <input id="deleteEntityRadius" name="deleteEntityRadius" type="number" value="1" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="deleteEntity" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Kustuta entity
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="adminAnnounceMake">
+                            <div
+                                x-data="{menuOpened: false}"
+                                class="bg-zinc-400 dark:bg-zinc-900 border border-black dark:border-zinc-700 dark:text-zinc-300 px-1 py-1 shadow mt-1 rounded"
+                            >
+                                <div id="title" class="flex justify-between">
+                                    <span class="ml-1 font-medium">Teadaanne</span>
+
+                                    <button x-on:click="menuOpened = !menuOpened" class="focus:outline-none"> 
+                                        <svg x-show="!menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                
+                                        <svg x-show="menuOpened" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    x-show="menuOpened" 
+                                    class="border-t border-black dark:border-zinc-700 mt-1 p-1 text-xs block"
+                                    x-transition:enter="transition ease-out duration-500" 
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-500" 
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <label for="announceText" class="font-medium">Sisu</label>
+                                    <input id="announceText" name="announceText" type="text" class="focus:outline-none h-8 mt-1 px-2 w-full bg-zinc-300 border-black dark:bg-zinc-800 border dark:border-zinc-700 rounded text-xs font-medium">
+
+                                    <button id="announceButton" class="bg-zinc-200 hover:bg-zinc-300 dark:bg-sky-800 dark:hover:bg-sky-900 px-1.5 py-2 rounded mt-1 uppercase font-medium text-white">
+                                        Saada
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function searchOptions() {
+                        var input, filter, table, i, txtValue;
+                        input = document.getElementById("searchOptions");
+                        filter = input.value.toUpperCase();
+                        table = document.getElementById("actions");
+
+                        for (i = 0; i < table.children.length; i++) {
+                            child = table.children[i];
+
+                            if (child) {
+                                txtValue = child.textContent || child.innerText;
+
+                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                    child.style.display = "";
+                                } else {
+                                    child.style.display = "none";
+                                }
+                            }
+                        }
+                    }
+
+                    function searchPlayers() {
+                        var input, filter, table, i, txtValue;
+                        input = document.getElementById("searchPlayers");
+                        filter = input.value.toUpperCase();
+                        table = document.getElementById("players");
+
+                        for (i = 0; i < table.children.length; i++) {
+                            child = table.children[i];
+
+                            if (child) {
+                                txtValue = child.textContent || child.innerText;
+
+                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                    child.style.display = "";
+                                } else {
+                                    child.style.display = "none";
+                                }
+                            }
+                        }
+                    }
+                </script>
+
+                <div
+                    class="h-full"
+                    x-show="activePage === 'players'"
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >
+                    <input id="searchPlayers" @keyup="searchPlayers" class="w-full bg-transparent border-b border-black dark:border-zinc-700 focus:outline-none" placeholder="Otsi...">
+                    
+                    <div id="players" class="h-full overflow-y-auto mt-1"></div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

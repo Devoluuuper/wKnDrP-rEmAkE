@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth focus:outline-none tap-highlight-transparent">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        textarea:focus, input:focus{
+            outline: none;
+        }
+
+        #loader {
+            display: none;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			border: 3px solid #E5E7EB;
+			border-color: #E5E7EB transparent #E5E7EB transparent;
+			animation: loader 1.2s linear infinite;
+        }
+
+		.dark-theme {
+			filter: invert(1) hue-rotate(180deg);
+		}
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        @keyframes loader {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <title>KKasutaja CAD</title>
+</head>
+<body>
+    <div id="badge" class="hidden absolute top-[20%] left-5">
+        <img class="relative w-[485px] h-[383px] z-10" src="./img/badge.png">
+        <img id="badgeImage" class="absolute h-40 top-9 left-14 z-0" src="">
+
+        <div id="info" class="absolute top-[180px] left-[23px] w-[203px] h-32 z-20 font-bold text-zinc-800">
+            <div class="bg-zinc-700 w-full h-8 text-white font-normal text-xs flex">
+                <p id="badgeDepartment" class="m-auto"></p>
+            </div>
+
+            <p id="badgeRank" class="text-center uppercase text-xs mt-5"></p>
+            <p id="badgeName" class="text-center uppercase mt-3"></p>
+            <p id="badgeCallsign" class="text-center uppercase mt-4"></p>
+        </div>
+
+        <div class="flex absolute top-[30px] h-5/6 left-[255px] w-[218px] z-20">
+            <img id="badgeMark" src="img/badges/doc.png" class="m-auto">
+        </div>
+    </div>
+
+    <div id="mdt" class="hidden">
+        <div 
+            id="container"
+            x-data="{activePage: 'profiles'}"
+            class="flex"
+            style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+        >
+            <div id="hovering" class="absolute h-12 w-full -mt-10"></div>
+
+            <div class="py-5 px-4 w-[21%] h-full overflow-hidden bg-zinc-800">
+                <div class="flex flex-col justify-between w-full h-full">
+                    <div class="flex items-center top-4 w-full select-none mb-4">
+                        <div class="flex mx-auto">
+                            <img id="departmentLogo" class="my-auto h-10" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.pngkey.com%2Fpng%2Ffull%2F399-3993589_lapd-badge-lspd-badge.png&f=1&nofb=1&ipt=04e7129dfb4c1b8361de951d8ac2e5b7f63bbf8402b2dbda4abccac326b95292&ipo=images" class="h-full ml-[56px] mt-[21px] -left-[37px] relative">
+                
+                            <div class="ml-2 flex flex-col text-left text-white relative my-auto">
+                                <div id="officerDepartmentName" class="font-bold text-sm">San Andreas State Park Rangers</div>
+                                <div id="officerHomeName" class="font-light text-xs">Liam Matthews</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex w-full h-full">
+                        <div class="flex flex-col items-start select-none w-full h-full mx-4">
+                            <div 
+                                x-on:click="activePage = 'profiles'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1"
+                                :class="activePage === 'profiles' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                                </svg>  
+    
+                                <p class="my-auto">Profiilid</p>
+                            </div>
+    
+                            <div
+                                id="vehiclePage1"
+                                x-on:click="activePage = 'vehicles'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                                :class="activePage === 'vehicles' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                </svg> 
+    
+                                <p class="my-auto">Sõidukid</p>
+                            </div>
+
+                            <div 
+                                id="casesPolice"
+                                x-on:click="activePage = 'cases_police'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1"
+                                :class="activePage === 'cases_police' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5" />
+                                </svg>
+
+                                <p class="my-auto">Juhtumid</p>
+                            </div>
+    
+                            <div
+                                id="documentsPage1"
+                                x-on:click="activePage = 'documents'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                                :class="activePage === 'documents' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                </svg>
+    
+                                <p class="my-auto">Dokumendid</p>
+                            </div>
+    
+                            <div
+                                id="documentsPage3"
+                                x-on:click="activePage = 'documents_medic'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                </svg>
+    
+                                <p class="my-auto">Dokumendid</p>
+                            </div>
+    
+                            <div
+                                id="staffPage1"
+                                x-on:click="activePage = 'staff'; functions.loadStaffPage()"
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                                :class="activePage === 'staff' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
+                                </svg>
+    
+                                <p class="my-auto">Juhtkond</p>
+                            </div>
+    
+                            <div
+                                id="candidations1"
+                                x-on:click="activePage = 'candidations'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                                :class="activePage === 'candidations' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
+                                </svg>
+    
+                                <p class="my-auto">Kandidatuurid</p>
+                            </div>
+    
+                            <div
+                                id="statements1"
+                                x-on:click="activePage = 'statements'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                                :class="activePage === 'statements' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
+                                </svg>  
+    
+                                <p class="my-auto">Avaldused</p>
+                            </div>
+    
+                            <div
+                                id="det_folder1"
+                                x-on:click="activePage = 'det_folders'" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                                :class="activePage === 'det_folders' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                                </svg>   
+    
+                                <p class="my-auto">Toimikud</p>
+                            </div>
+    
+                            <div
+                                id="doc_prisoners1"
+                                x-on:click="activePage = 'doc_prisoners'; functions.reloadDoc()" 
+                                class="flex px-3 py-3 border border-transparent text-zinc-400 rounded font-medium hover:border-yellow-500 hover:text-yellow-300 w-full mb-1 mb-1"
+                                :class="activePage === 'doc_prisoners' ? 'bg-zinc-900 border border-zinc-700' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 my-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                </svg>
+    
+                                <p class="my-auto">Vanglateenistus</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex justify-center -mt-4">
+                        <div id="loader"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div 
+                class="w-[79%] h-full overflow-hidden bg-zinc-800"
+                @message.window="
+                    if ($event.data.action == 'setPage') {
+                        activePage = $event.data.page;
+                    }
+                "
+            >
+                <div 
+                    x-show="activePage === 'candidations'" 
+                    class="text-center ml-4 mr-4 h-full flex gap-1" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >   
+                    <div id="candidationData" class="flex gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Kandidatuurid</h1>
+        
+                                <input id="candidationSearch" class="ml-4 bg-transparent border-b w-full focus-none" placeholder="...">
+                            </div>
+        
+                            <div id="candidationList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-2/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Sisu</h1>
+                            </div>
+
+                            <div class="flex gap-1 w-full mb-1">
+                                <div class="w-3/6">
+                                    <div class="text-xs">State ID</div>
+                                    <div id="candidationStateId" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">Ees- ja perekonnanimi</div>
+                                    <div id="candidationName" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">E-post</div>
+                                    <div id="candidationEmail" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">Kuupäev</div>
+                                    <div id="candidationDate" class="font-bold border-b border-zinc-300">‎</div>
+
+                                    <button class="rounded shadow w-full py-1 mt-1 bg-red-700 hover:bg-red-800 text-white" id="removeCandidation">Kustuta avaldus</button>
+                                </div>
+
+                                <textarea disabled maxlength="535" id="candidationInfo" placeholder="Motivatsioonikiri..." class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-52 resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div 
+                    x-show="activePage === 'statements'" 
+                    class="text-center ml-4 mr-4 h-full flex gap-1" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >   
+                    <div id="statementData" class="flex gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Avaldused</h1>
+        
+                                <input id="statementSearch" class="ml-4 bg-transparent border-b w-full focus-none" placeholder="...">
+                            </div>
+        
+                            <div id="statementList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-2/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Sisu</h1>
+                            </div>
+
+                            <div class="flex gap-1 w-full mb-1">
+                                <div class="w-3/6">
+                                    <div class="text-xs">State ID</div>
+                                    <div id="statementStateId" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">Ees- ja perekonnanimi</div>
+                                    <div id="statementName" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">E-post</div>
+                                    <div id="statementEmail" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">Kuupäev</div>
+                                    <div id="statementDate" class="font-bold border-b border-zinc-300">‎</div>
+
+                                    <button class="rounded shadow w-full py-1 mt-1 bg-red-700 hover:bg-red-800 text-white" id="removeStatement">Kustuta avaldus</button>
+                                </div>
+
+                                <textarea disabled maxlength="535" id="statementInfo" placeholder="Avaldus..." class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-52 resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div 
+                    x-show="activePage === 'det_folders'" 
+                    class="text-center ml-4 mr-4 h-full flex gap-1" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >   
+                    <div id="statementData" class="flex gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Toimikud</h1>
+        
+                                <input id="statementSearch" class="ml-4 bg-transparent border-b w-full focus-none" placeholder="...">
+                            </div>
+        
+                            <div id="statementList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-2/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Sisu</h1>
+                            </div>
+
+                            <div class="flex gap-1 w-full mb-1">
+                                <div class="w-3/6">
+                                    <div class="text-xs">State ID</div>
+                                    <div id="statementStateId" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">Ees- ja perekonnanimi</div>
+                                    <div id="statementName" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">E-post</div>
+                                    <div id="statementEmail" class="font-bold border-b border-zinc-300">‎</div>
+                                    <div class="text-xs">Kuupäev</div>
+                                    <div id="statementDate" class="font-bold border-b border-zinc-300">‎</div>
+
+                                    <button class="rounded shadow w-full py-1 mt-1 bg-red-700 hover:bg-red-800 text-white" id="removeStatement">Kustuta avaldus</button>
+                                </div>
+
+                                <textarea disabled maxlength="535" id="statementInfo" placeholder="Avaldus..." class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-52 resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div 
+                    x-show="activePage === 'doc_prisoners'" 
+                    class="text-center ml-4 mr-4 h-full flex gap-1" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >   
+                    <div id="docData" class="flex gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-full h-[95%]">
+                            <div id="niceBehavior" class="fixed inset-0 hidden items-center justify-center overflow-y-auto overflow-x-hidden z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                <div class="closeNiceBehaviour fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                    <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                </div>
+
+                                <div class="relative w-full max-w-xl md:max-w-2xl h-full md:h-auto z-50">
+                                    <div class="relative rounded shadow bg-zinc-800">
+                                        <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                            <h3 class="text-xl font-semibold text-white">
+                                                Eeskujulik käitumine
+                                            </h3>
+                            
+                                            <button type="button" class="closeNiceBehaviour text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+                                        </div>
+                            
+                                        <div class="px-6 py-4 space-y-2">
+                                            <div class="flex gap-1">
+                                                <div class="w-1/2">
+                                                    <label for="category" class="block text-sm font-medium">Menetlusalune isik</label>
+                                                    <input id="casePersonNice" value="Alberd Karhu" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" disabled>
+                                                </div>
+                                
+                                                <div class="w-1/2">
+                                                    <label for="category" class="block text-sm font-medium">Menetleja</label>
+                                                    <input id="caseOfficerNice" value="" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="">
+                                                <label for="category" class="block text-sm font-medium">Vanglakaristuse alandus</label>
+                                                
+                                                <div class="flex">
+                                                    <select id="niceValue" class="bg-zinc-900 border border-zinc-700 rounded-l px-1 h-10 w-full">
+                                                        <option value="0" selected>0</option>
+                                                        <option value="5">5</option>
+                                                    </select>
+            
+                                                    <div class="flex items-center rounded-r px-0.5 h-10 bg-zinc-900 border border-zinc-700">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-300 w-6 h-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="">
+                                                <label for="category" class="block text-sm font-medium">Juhtumi kirjeldus</label>
+                                                <textarea id="caseDescriptionNice" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full resize-none"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                            <button id="niceBehaviorAccept" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                            <button class="closeNiceBehaviour w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="diplaModal" class="fixed inset-0 hidden items-center justify-center overflow-y-auto overflow-x-hidden z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                <div class="closeDiplaModal fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                    <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                </div>
+                                
+                                <div class="relative w-full max-w-xl md:max-w-2xl h-full md:h-auto z-50">
+                                    <div class="relative rounded shadow bg-zinc-800">
+                                        <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                            <h3 class="text-xl font-semibold text-white">
+                                                Distsiplinaarmenetlus
+                                            </h3>
+                            
+                                            <button type="button" class="closeDiplaModal text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+                                        </div>
+                            
+                                        <div class="px-6 py-4 space-y-2">
+                                            <div class="flex gap-1">
+                                                <div class="w-1/2">
+                                                    <label for="category" class="block text-sm font-medium">Menetlusalune isik</label>
+                                                    <input id="casePersonDipla" value="Alberd Karhu" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" disabled>
+                                                </div>
+                                
+                                                <div class="w-1/2">
+                                                    <label for="category" class="block text-sm font-medium">Menetleja</label>
+                                                    <input id="caseOfficerDipla" value="" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="">
+                                                <label for="category" class="block text-sm font-medium">Vanglakaristuse pikendus</label>
+                                                
+                                                <div class="flex">
+                                                    <select id="diplaValue" class="bg-zinc-900 border border-zinc-700 rounded-l px-1 h-10 w-full">
+                                                        <option value="0" selected>0</option>
+                                                        <option value="5">5</option>
+                                                        <option value="15">15</option>
+                                                        <option value="30">30</option>
+                                                    </select>
+            
+                                                    <div class="flex items-center rounded-r px-0.5 h-10 bg-zinc-900 border border-zinc-700">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-300 w-6 h-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="">
+                                                <label for="category" class="block text-sm font-medium">Juhtumi kirjeldus</label>
+                                                <textarea id="caseDescriptionDipla" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full resize-none"></textarea>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                            <button id="diplaAccept" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                            <button class="closeDiplaModal w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>   
+
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Vanglateenistus</h1>
+
+                                <svg id="refreshDocPage" class="cursor-pointer w-8 h-8 mt-auto mb-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                            </div>
+        
+                            <div id="docList" class="overflow-y-auto h-[580px] grid grid-cols-2 gap-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    x-data="{activeDocument: 'saks'}"
+                    x-show="activePage === 'documents'"
+                    class="text-center ml-4 mr-4 h-full flex gap-1"
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >
+                    <div class="block w-full h-[95%] border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300">
+                        <div class="w-full gap-1 h-[5%]">
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'saks'">
+                                SakS
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'manual'">
+                                Manual
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'codes'">
+                                10-koodid
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'clothes'">
+                                Vormiriietus
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'class_1'">
+                                Klass 1
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'class_2'">
+                                Klass 2
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'class_3'">
+                                Klass 3
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'hsu'">
+                                HSU
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'msu'">
+                                MSU
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'asu'">
+                                ASU
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-sky-700 hover:bg-sky-700 rounded shadow text-white" x-on:click="activeDocument = 'off'">
+                                OFF-ROAD
+                            </button>
+
+                            <button id="docDiplaDoc" class="hidden px-2 py-0.5 bg-gray-500 hover:bg-gray-600 rounded shadow text-white" x-on:click="activeDocument = 'doc_dipla'">
+                                Distsiplinaarmenetluse alustamise kord
+                            </button>
+                        </div>
+
+                        <div class="flex justify-center h-[95%] w-full">
+                            <iframe x-show="activeDocument === 'saks'" class="w-full h-full rounded" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQJssynXWVGERAaIR_o-D_87JjOUsH_nyeaa9H0N9F0L0lT7KcYYVWdGDgAp1NJI-ofQ2O7GLSxqNKt/pubhtml"></iframe>
+                            <iframe x-show="activeDocument === 'manual'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vRPT_7LidBGcQYErcnMI1T8vLvKN9zoO93_YSD3-2q9EpPh2AH5uT3cHDAlIowwdLjuMsNwQ7FlXKTJ/pub"></iframe>
+                            <iframe x-show="activeDocument === 'codes'" class=" w-full h-full rounded" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRBjqc_2Tkc0_8RZDKbyAD9MeEY6Cnlzw2zXGZ8Kk3G1U1QdZRHIXtoR-61qkyAm4qRO0ZbDqy8Bhgs/pubhtml"></iframe>
+                            <iframe x-show="activeDocument === 'clothes'" class=" w-full h-full rounded" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQyPqzFf7BGYLUwI6ugWnq7GahJ-rge4HfZYKbcv99FUJSDYZ4GRWQjllGvU9WZzJtNPbqf2huVHlKn/pubhtml"></iframe>
+                            <iframe x-show="activeDocument === 'class_1'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vTZ9h7NUS5qCYF4xgSSpgiwXxxWqKfTZIb3amiRCNdsQ1aDb_WCCDL2ULTQsoX2ch0oMwAIYZSwzm6Z/pub"></iframe>
+                            <iframe x-show="activeDocument === 'class_2'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vR-opUdBRad4HDaE7wQdCcSrlgDyvLXGtx_n8wJvF3zXfF3QBmHt_DRmgHeWaS_dcqb9eA45yxCJHkS/pub"></iframe>
+                            <iframe x-show="activeDocument === 'class_3'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vQgjphyscdOBmID6WZWqa4UU5jLdzFBQXU9cAUqXEWrdD80InrZmI0v0j3jWPPK8y1pOhx_PUNVJOxy/pub"></iframe>
+                            <iframe x-show="activeDocument === 'hsu'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vRNmg8c-49g0vJDLJZ9yUvVpOl51kT0MBC6guct5rIi37sIroeAILBMXQJdpiXGIfdQ7s30VWfOaDel/pub"></iframe>
+                            <iframe x-show="activeDocument === 'msu'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vTt_gsFcNQdg7QeNEs4ssn4JiqkQPAB-0wEDWxEUKA2wWF1XxZZ2KJL561vHpYaahF36MxGV_CTCmns/pub"></iframe>
+                            <iframe x-show="activeDocument === 'asu'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vRUhGiC5XxPZZPxRRl_QKnV1OXkZETRbJErUkgU3hM3sKVgqnNDpEkxbwgYTj9bGoq2vVeXESSxub2Q/pub"></iframe>
+                            <iframe x-show="activeDocument === 'off'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vRB8cl-92aGuxrl7p3hfQFfIwPc1EsedLIdDmqTLguq7aLkreHoLM1UcmfsAgp6adp31ZrFF_TlhGmg/pub"></iframe>
+                        
+                            <iframe x-show="activeDocument === 'doc_dipla'" class="dark-theme w-full h-full rounded" src="https://docs.google.com/document/d/e/2PACX-1vRWvGPyPEsrtF_V3uzAYwQkdGKQ7ECfif4QZbA9G6IxuRDEt4OIpDI2tYZKvFMJSQ/pub?embedded=true"></iframe>
+                        </div>
+                    </div>  
+                </div>
+
+                <div
+                    x-data="{activeDocument: 'info_ems'}"
+                    x-show="activePage === 'documents_medic'"
+                    class="text-center ml-4 mr-4 h-full flex gap-1"
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >
+                    <div class="block w-full h-[95%] border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300">
+                        <div class="w-full gap-1 h-[5%]">
+                            <button class="px-2 py-0.5 bg-red-700 hover:bg-red-700 rounded shadow text-white" x-on:click="activeDocument = 'info_ems'">
+                                INFO
+                            </button>
+
+                            <button class="px-2 py-0.5 bg-green-700 hover:bg-green-700 rounded shadow text-white" x-on:click="activeDocument = 'manual_ems'">
+                                MANUAL
+                            </button>
+                        </div>
+
+                        <div class="flex justify-center h-[95%] w-full">
+                            <iframe x-show="activeDocument === 'info_ems'" class="w-full h-full rounded" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRB7sOKkIssXiRcUqSgg46VuGQxT_Lj_k99hOeILzDSFXyWIkGgx_Q2yyzkWG2vRr46wtIVboce4stO/pubhtml?widget=true&amp;headers=false"></iframe>
+                            <iframe x-show="activeDocument === 'manual_ems'" class="w-full h-full rounded" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTIVJ3iv2xU4Q-VIFDONtpAtcro713HlpYFHCm35gVWEcaIJPaZ8hMDuhXilW60j-6zwcS1ae4MFn_E/pubhtml?widget=true&amp;headers=false"></iframe>
+                        </div>
+                    </div>  
+                </div>
+
+                <div 
+                    x-show="activePage === 'profiles'" 
+                    class="text-center ml-4 mr-4 h-full flex gap-1" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >   
+                    <div id="profileData" class="flex gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Profiilid</h1>
+        
+                                <input id="profileSearch" class="ml-4 bg-transparent border-b w-full focus-none" placeholder="...">
+                            </div>
+        
+                            <div id="playerList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+        
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between items-center mb-2">
+                                <h1 class="text-xl font-medium">Info</h1>
+
+                                <svg id="profileRefresh" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 cursor-pointer">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                            </div>
+        
+                            <div class="h-full">
+                                <div class="flex gap-1 w-full mb-1">
+                                    <img id="profileImage" class="h-52 w-48 cursor-pointer" src="https://i.gyazo.com/b065e5bda1e1b97073a239ddadbdb5e8.png">
+
+                                    <div class="content w-full">
+                                        <div class="text-xs">State ID</div>
+                                        <div id="profilePermanentId" class="font-bold border-b border-zinc-300">‎</div>
+                                        <div class="text-xs">Ees- ja perekonnanimi</div>
+                                        <div id="profileName" class="font-bold border-b border-zinc-300">‎</div>
+                                        <div class="text-xs">Sünnikuupäev</div>
+                                        <div id="profileBirthDate" class="font-bold border-b border-zinc-300">01/01/1970</div>
+                                        <div class="text-xs">Tagaotsitav</div>
+                                        <div id="profileWanted" class="font-bold border-b border-zinc-300"><span class="text-green-500">EI</span></div>
+                                        <div class="text-xs">Veapunktid</div>
+                                        <div id="profilePoints" class="font-bold border-b border-zinc-300">0</div>
+                                    </div>
+                                </div>
+                
+                                <div class="h-full">
+                                    <div class="flex justify-between mb-1">
+                                        <h1 class="text-xl font-medium">Märkmed</h1>
+
+                                        <button id="saveNotes" class="px-2.5 py-1.5 text-xs font-medium rounded shadow text-white bg-green-600 hover:bg-green-700">Salvesta</button>
+                                    </div>
+
+                                    <textarea id="profileNotes" placeholder="..." class="bg-zinc-800 border border-zinc-700 shadow rounded block p-2 w-full h-[50%] text-sm resize-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%] overflow-y-auto">
+                            <button id="createCaseButton" class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 shadow rounded py-1 w-full">Loo juhtum</button>
+        
+                            <div id="licenses" class="mb-1">
+                                <h1 class="text-xl font-medium">Load</h1>
+        
+                                <div id="licensesList" class="mt-2 grid grid-cols-3 gap-1"></div>
+                            </div>
+
+                            <div id="wanted" class="mb-2">
+                                <div class="flex justify-between mb-1">
+                                    <h1 class="text-xl font-medium">Tagaotsitavus</h1>
+
+                                    <button id="saveWantedProfile" class="px-2.5 py-1.5 text-xs font-medium rounded shadow text-white bg-green-600 hover:bg-green-700">Salvesta</button>
+                                </div>
+        
+                                <textarea id="profileWantedReason" maxlength="535" placeholder="..." class="bg-zinc-800 border border-zinc-700 shadow rounded block p-2 w-full h-32 text-sm resize-none mt-1"></textarea>
+                            </div>
+
+                            <div x-data="{ open: false }" id="punishments" class="mb-2 hidden">
+                                <div class="flex justify-between">
+                                    <h1 class="text-xl font-medium">Seotud juhtumid</h1>
+                            
+                                    <button @click="open = !open" class="cursor-pointer mt-auto mb-auto">
+                                        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                            
+                                        <svg x-show="open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+        
+                                <div x-show="open" id="punishmentContainer" class="mt-2"></div>
+                            </div>
+
+                            <div x-data="{ open: false }" id="bills" class="mb-2 hidden">
+                                <div class="flex justify-between">
+                                    <h1 class="text-xl font-medium">Tasumata arved</h1>
+                            
+                                    <button @click="open = !open" class="cursor-pointer mt-auto mb-auto">
+                                        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                            
+                                        <svg x-show="open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+        
+                                <div x-show="open" id="billsContainer" class="mt-2"></div>
+                            </div>
+
+                            <div x-data="{ open: false }" id="vehicles" class="mb-2 hidden">
+                                <div class="flex justify-between">
+                                    <h1 class="text-xl font-medium">Sõidukid</h1>
+                            
+                                    <button @click="open = !open" class="cursor-pointer mt-auto mb-auto">
+                                        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                            
+                                        <svg x-show="open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+        
+                                <div x-show="open" id="vehicleList" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="createDiagnose" class="hidden flex gap-1 w-full h-full">
+                        <div class="block w-full h-[95%] border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300">
+                            <div id="top" class="flex justify-between text-xl">
+                                <p class="uppercase font-medium">Juhtumi loomine</p>
+        
+                                <!--<p id="id">#711789</p>-->
+                            </div>
+        
+                            <div class="border-b border-zinc-300"></div>
+        
+                            <div class="flex gap-1">
+                                <div class="w-1/4">
+                                    <label for="category" class="block text-sm font-medium">Isik</label>
+                                    <input id="diagnosePerson" value="Alberd Karhu" class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" disabled>
+                                </div>
+                
+                                <div class="w-1/4">
+                                    <label for="category" class="block text-sm font-medium">Arst</label>
+                                    <input id="diagnoseMedic" value="" class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" disabled>
+                                </div>
+
+                                <div class="w-1/4">
+                                    <label for="category" class="block text-sm font-medium">Arve</label>
+                                    <input type="number" id="diagnoseBill" value="0" class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" placeholder="0" min="0" max="150">
+                                </div>
+
+                                <div class="w-1/4">
+                                    <label for="category" class="block text-sm font-medium">Aeg intensiivis</label>
+                                    <input type="number" id="diagnoseIntensive" value="0" class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" placeholder="0" min="0" max="10">
+                                </div>
+                            </div>
+        
+                            <div class="block"> <!-- justify-between -->
+                                <div class="flex gap-1 w-full">
+                                    <div class="w-1/2">
+                                        <label for="category" class="block text-sm font-medium">Juhtumi kirjeldus</label>
+                                        <textarea id="diagnoseDescription" class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full resize-none"></textarea>
+                                    </div>
+
+                                    <div class="w-1/2">
+                                        <label for="category" class="block text-sm font-medium">Mida tehti?</label>
+                                        <textarea id="diagnoseDoneItems" class="bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full resize-none"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mt-1">
+                                    <div class="flex justify-between">
+                                        <label for="category" class="mt-auto mb-auto block text-sm font-medium">Vigastused</label>
+
+                                        <button id="loadFixedDamages" class="uppercase font-medium px-2 bg-green-700 text-white hover:bg-green-800 rounded shadow">
+                                            Lisa fikseeritud
+                                        </button>
+                                    </div>
+
+                                    <textarea id="diagnoseDamages" disabled class="mt-1 bg-zinc-800 border border-zinc-700 shadow text-sm rounded focus-none h-48 block p-2.5 w-full resize-none"></textarea>
+                                </div>
+
+                                <div class="mt-1">
+                                    <div class="flex items-center">
+                                        <input prescription="tramadol" type="checkbox" value="" class="w-4 h-4 text-yellow-300 bg-zinc-100 border-zinc-300 rounded focus:ring-sky-500 dark:focus:ring-sky-500 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600">
+                                        <label class="ml-2 text-sm font-medium text-zinc-300">Tramadool</label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input prescription="antibio" id="prescAntibio" type="checkbox" value="" class="w-4 h-4 text-yellow-300 bg-zinc-100 border-zinc-300 rounded focus:ring-sky-500 dark:focus:ring-sky-500 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600">
+                                        <label class="ml-2 text-sm font-medium text-zinc-300">Antibiootikumid</label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input prescription="antidep" type="checkbox" value="" class="w-4 h-4 text-yellow-300 bg-zinc-100 border-zinc-300 rounded focus:ring-sky-500 dark:focus:ring-sky-500 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600">
+                                        <label class="ml-2 text-sm font-medium text-zinc-300">Antidepressant</label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input prescription="soberup" type="checkbox" value="" class="w-4 h-4 text-yellow-300 bg-zinc-100 border-zinc-300 rounded focus:ring-sky-500 dark:focus:ring-sky-500 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600">
+                                        <label class="ml-2 text-sm font-medium text-zinc-300">Sober UP</label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input prescription="xanax" type="checkbox" value="" class="w-4 h-4 text-yellow-300 bg-zinc-100 border-zinc-300 rounded focus:ring-sky-500 dark:focus:ring-sky-500 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600">
+                                        <label class="ml-2 text-sm font-medium text-zinc-300">Xanax</label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input prescription="asprin" type="checkbox" value="" class="w-4 h-4 text-yellow-300 bg-zinc-100 border-zinc-300 rounded focus:ring-sky-500 dark:focus:ring-sky-500 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600">
+                                        <label class="ml-2 text-sm font-medium text-zinc-300">Aspiriin</label>
+                                    </div>
+                                </div>
+            
+                                <div class="mt-1">
+                                    <button id="punish" class="bg-red-600 hover:bg-red-700 px-1 py-2 w-2/12 rounded text-md font-medium uppercase">Loo juhtum</button>
+                                    <button id="backToProfile" class="px-1 py-2 w-2/12 border border-zinc-700 hover:bg-zinc-800 rounded text-md font-medium uppercase">Tagasi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="selectPunishments" class="hidden flex gap-1 w-full h-full">
+                        <div class="block w-full h-[95%] overflow-y-auto border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300">
+                            <div class="flex justify-between">
+                                <h4>Valitud karistused:</h4>
+
+                                <svg id="backToCase" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="cursor-pointer w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </div>
+                            
+                            <div id="selectedPunishments" class="grid grid-cols-4 gap-1 border-b border-zinc-300"></div>
+
+                            <div class="flex justify-end mt-1">
+                                <div class="block">
+                                    <label class="block text-xs font-medium">Otsi</label>
+                                    <input @keyup="searchPunishmeynt" id="punishmenytSearch" class="bg-transparent border-b w-96 focus-none mb-1" placeholder="...">
+                                </div>
+                            </div>
+                            
+                            <div id="punishmentList2" class="grid grid-cols-3 gap-1 overflow-y-auto"></div>
+        
+                            <script>
+                                function searchPunishment() {
+                                    var input, filter, table, i, txtValue;
+                                    input = document.getElementById("punishmentSearch");
+                                    filter = input.value.toUpperCase();
+                                    table = document.getElementById("punishmentList");
+        
+                                    for (i = 0; i < table.children.length; i++) {
+                                        child = table.children[i];
+        
+                                        if (child) {
+                                            txtValue = child.textContent || child.innerText;
+        
+                                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                                child.style.display = "";
+                                            } else {
+                                                child.style.display = "none";
+                                            }
+                                        }
+                                    }
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div 
+                    x-show="activePage === 'cases_police'" 
+                    class="w-full h-full" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0" 
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                    x-data="{ page: 'overview' }"
+                >
+                    <div id="policeCaseListing" class="flex ml-4 mr-4 gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-2/5 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Juhtumid</h1>
+        
+                                <input id="caseSearch" class="ml-4 mr-2 bg-transparent border-b w-full focus-none" placeholder="...">
+
+                                <svg id="createNewCase" class="cursor-pointer w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                                </svg>
+                            </div>
+        
+                            <div id="casesList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+                    </div>
+
+                    <div id="policeCaseInformation" class="hidden text-center ml-4 mr-4 h-full gap-1 h-[95%] overflow-y-auto">
+                        <header class="bg-zinc-900 shadow p-4 mt-4 border border-zinc-700 rounded h-20 flex items-center">
+                            <div class="container mx-auto flex justify-between items-center">
+                                <div>
+                                    <div>
+                                        <h1 class="text-2xl font-bold text-white">Juhtum #<span id="policeCaseId">12354</span></h1>
+                                        <p id="policeCaseTitle" class="text-zinc-400"></p>
+                                    </div>
+                        
+                                    <!-- The Modal for Editing Case Name (Hidden by Default) -->
+                                    <div id="editCaseNameModal" class="text-zinc-300 fixed inset-0 hidden items-center justify-center overflow-y-auto overflow-x-hidden z-50">
+                                        <div class="fixed inset-0 transform transition-all z-50">
+                                            <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                        </div>
+                                        
+                                        <div class="relative w-full max-w-xl md:max-w-2xl h-full md:h-auto z-50">
+                                            <div class="relative rounded shadow bg-zinc-800">
+                                                <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                    <h3 class="text-xl font-semibold text-white">Olulise info uuendamine</h3>
+                                                    <button type="button" class="closeEditCaseNameModal text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center">
+                                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                        <span class="sr-only">Close modal</span>
+                                                    </button>
+                                                </div>
+                        
+                                                <div class="px-6 py-4 space-y-2">
+                                                    <div>
+                                                        <label for="category" class="block text-sm font-medium">Pealkiri</label>
+                                                        <input maxlength="55" id="policeCaseTitleModel" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded block p-2.5 w-full h-10">
+                                                    </div>
+                        
+                                                    <div>
+                                                        <label for="category" class="block text-sm font-medium">Juhtumi kirjeldus</label>
+                                                        <textarea maxlength="3500" id="policeCaseDescriptionModel" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded block p-2.5 w-full h-64 resize-none"></textarea>
+                                                    </div>
+                                                </div>
+                        
+                                                <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                    <button id="policeCaseInfoEditorConfirm" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded">Kinnita</button>
+                                                    <button class="closeEditCaseNameModal w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded">Katkesta</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        
+                                <div class="flex items-center space-x-4">
+                                    <svg id="policeCaseDelete" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hidden size-6 cursor-pointer text-white mt-0.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75 14.25 12m0 0 2.25 2.25M14.25 12l2.25-2.25M14.25 12 12 14.25m-2.58 4.92-6.374-6.375a1.125 1.125 0 0 1 0-1.59L9.42 4.83c.21-.211.497-.33.795-.33H19.5a2.25 2.25 0 0 1 2.25 2.25v10.5a2.25 2.25 0 0 1-2.25 2.25h-9.284c-.298 0-.585-.119-.795-.33Z" />
+                                    </svg>
+
+                                    <svg id="caseFileRefresh" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 cursor-pointer text-white mt-0.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                    </svg>
+
+                                    <svg id="policeCaseInfoEditor" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 cursor-pointer text-white mt-0.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                    </svg>
+                                      
+                                    <select id="caseFileStatus" class="border border-zinc-700 bg-zinc-800 text-zinc-300 rounded px-3 py-2">
+                                        <option value="Avatud">Avatud</option>
+                                        <option value="Suletud">Suletud</option>
+                                        <option value="Uurimisel">Uurimisel</option>
+                                        <option value="Kohtumenetlust ootamas">Kohtumenetlust ootamas</option>
+                                    </select>
+            
+                                    <div class="text-sm space-y-1 space-x-1">
+                                        <button id="closeCaseFile" class="bg-red-600 text-white px-2.5 py-1.5 rounded hover:bg-red-500">Tagasi</button>
+                                        <button id="addCaseMember" class="bg-sky-600 text-white px-2.5 py-1.5 rounded hover:bg-sky-500">Lisa seotud isik</button>
+                                        <button id="addDispatchMembers" class="bg-yellow-600 text-white px-2.5 py-1.5 rounded hover:bg-yellow-500">Lisa (VK) reageerijad</button>
+                                        <button id="joinCase" class="bg-green-600 text-white px-2.5 py-1.5 rounded hover:bg-green-500">Liitu juhtumiga</button>
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </header>                        
+
+                        <div 
+                            id="casesAddMember" 
+                            class="text-zinc-300 fixed inset-0 hidden items-center justify-center overflow-y-auto overflow-x-hidden z-50" 
+                            x-transition:enter="ease-out duration-300" 
+                            x-transition:enter-start="opacity-0" 
+                            x-transition:enter-end="opacity-100" 
+                            x-transition:leave="ease-in duration-200" 
+                            x-transition:leave-start="opacity-100" 
+                            x-transition:leave-end="opacity-0"
+                        >
+                            <div class="closeCasesAddMember fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                            </div>
+                            
+                            <div class="relative w-full max-w-xl md:max-w-2xl h-full md:h-auto z-50">
+                                <div class="relative rounded shadow bg-zinc-800">
+                                    <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                        <h3 class="text-xl font-semibold text-white">Seotud isiku lisamine</h3>
+                            
+                                        <button type="button" class="closeCasesAddMember text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="sr-only">Close modal</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="px-6 py-4 space-y-4">
+                                        <div>
+                                            <label for="casePlayerName" class="block text-sm font-medium text-white mb-2">Otsing</label>
+
+                                            <div class="relative">
+                                                <input id="casePlayerName" type="text" placeholder="Sisesta päring..." class="bg-zinc-900 border border-zinc-700 text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-sky-500 block w-full h-10 pr-12 pl-3" />
+                                            </div>
+                                        </div>
+
+                                        <div class="flex gap-4">
+                                            <div class="w-1/2">
+                                                <label for="casePlayerType" class="block text-sm font-medium text-white mb-2">Tüüp</label>
+
+                                                <select id="casePlayerType" class="bg-zinc-900 border border-zinc-700 text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-sky-500 block w-full h-10 px-3">
+                                                    <option value="civil">Tsiviil</option>
+                                                    <option value="police">Ametnik</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="w-1/2">
+                                                <label for="casePlayerRole" class="block text-sm font-medium text-white mb-2">Roll</label>
+
+                                                <div class="relative">
+                                                    <input maxlength="155" id="casePlayerRole" type="text" placeholder="Sisesta isiku roll..." class="bg-zinc-900 border border-zinc-700 text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-sky-500 block w-full h-10 px-3" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h3 class="text font-semibold text-white">Otsingu tulemused</h3>
+
+                                        <div id="casePlayerSearchResults" class="mt-2 space-y-2 h-64 overflow-y-auto">
+                                            <div class="text-center text-sm text-zinc-500" id="no-results">Ei leitud ühtegi vastet!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                
+                        <div class="container mx-auto mt-4">
+                            <ul class="flex gap-1 border-b border-zinc-700">
+                                <li>
+                                    <a 
+                                        @click="page = 'overview'"
+                                        :class="page === 'overview' ? 'bg-zinc-800 text-gray-300' : 'bg-zinc-900 text-gray-400'"
+                                        class="shadow inline-block border-l border-t border-r border-zinc-700 rounded-t py-2 px-4 font-semibold"
+                                        href="#">
+                                        Ülevaade
+                                    </a>
+                                </li>
+                        
+                                <li>
+                                    <a 
+                                        @click="page = 'persons'"
+                                        :class="page === 'persons' ? 'bg-zinc-800 text-gray-300' : 'bg-zinc-900 text-gray-400'"
+                                        class="shadow inline-block border-l border-t border-r border-zinc-700 rounded-t py-2 px-4 font-semibold"
+                                        href="#">
+                                        Seotud isikud
+                                    </a>
+                                </li>
+                        
+                                <li>
+                                    <a 
+                                        @click="page = 'officers'"
+                                        :class="page === 'officers' ? 'bg-zinc-800 text-gray-300' : 'bg-zinc-900 text-gray-400'"
+                                        class="shadow inline-block border-l border-t border-r border-zinc-700 rounded-t py-2 px-4 font-semibold"
+                                        href="#">
+                                        Seotud ametnikud
+                                    </a>
+                                </li>
+                        
+                                <li>
+                                    <a 
+                                        @click="page = 'vehicles'"
+                                        :class="page === 'vehicles' ? 'bg-zinc-800 text-gray-300' : 'bg-zinc-900 text-gray-400'"
+                                        class="shadow inline-block border-l border-t border-r border-zinc-700 rounded-t py-2 px-4 font-semibold"
+                                        href="#">
+                                        Seotud sõidukid
+                                    </a>
+                                </li>
+                                
+                                <li>
+                                    <a 
+                                        @click="page = 'confiscated_items'"
+                                        :class="page === 'confiscated_items' ? 'bg-zinc-800 text-gray-300' : 'bg-zinc-900 text-gray-400'"
+                                        class="shadow inline-block border-l border-t border-r border-zinc-700 rounded-t py-2 px-4 font-semibold"
+                                        href="#">
+                                        Konfiskeeritud esemed
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>                                          
+                
+                        <div class="container mx-auto mt-6 h-[55%] overflow-y-auto">
+                            <div x-show="page === 'overview'" class="bg-zinc-900 shadow overflow-hidden border border-zinc-700 rounded">
+                                <div class="w-full px-4 py-5">
+                                    <h3 class="text font-medium text-white">Ülevaade</h3>
+                                    <p class="mt-1 text-sm text-zinc-400 text-center">Oluline ja kriitiline info juhtumi kohta.</p>
+                                </div>
+                    
+                                <div class="border-t border-zinc-700 p-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-zinc-400">Juhtumi kuupäev</h4>
+                                        <p id="policeCaseDate" class="mt-1 text-sm text-zinc-300">24. august 2024 kell 18:10</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-zinc-400">Staatus</h4>
+                                        <p id="policeCaseStatus" class="mt-1 text-sm text-zinc-300">Avatud</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-zinc-400">Seotud isikuid</h4>
+                                        <p class="mt-1 text-sm text-zinc-300"><span id="policeCasePersonCount">4</span> (+<span id="policeCaseOfficersCount">4</span>)</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-zinc-400">Määratud uurija</h4>
+                                        <p id="policeCaseDetective" class="mt-1 text-sm text-zinc-300">Sellele juhtumile ei ole uurijat määratud!</p>
+                                    </div>
+                                    <div class="col-span-full">
+                                        <h4 class="text-sm font-medium text-zinc-400">Juhtumi kirjeldus</h4>
+                                        <p id="policeCaseDescription" class="mt-1 text-sm text-zinc-300"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div x-show="page === 'persons'" class="bg-zinc-900 shadow overflow-hidden border border-zinc-700 rounded">
+                                <div class="w-full px-4 py-5">
+                                    <h3 class="text font-medium text-white">Seotud isikud</h3>
+                                    <p class="mt-1 text-sm text-zinc-400 text-center">Juhtumiga seotud kahtlustatavate, ohvrite ja tunnistajate nimekiri.</p>
+                                </div>
+                
+                                <div class="border-t border-zinc-700">
+                                    <dl>
+                                        <div class="bg-zinc-900 px-4 py-5 grid grid-cols-4 gap-4">
+                                            <dt class="text-sm font-medium text-zinc-400">State ID</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Nimi</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Roll</dt>
+                                            <dt class="text-sm font-medium text-zinc-400"></dt>
+                                        </div>
+
+                                        <div id="policeCasePersonsTable"></div>
+                                    </dl>
+                                </div>
+
+                                <div 
+                                    id="editCasePersonPuns" 
+                                    class="text-zinc-300 fixed inset-0 hidden items-center justify-center overflow-y-auto overflow-x-hidden z-50" 
+                                    x-transition:enter="ease-out duration-300" 
+                                    x-transition:enter-start="opacity-0" 
+                                    x-transition:enter-end="opacity-100" 
+                                    x-transition:leave="ease-in duration-200" 
+                                    x-transition:leave-start="opacity-100" 
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <div class="closeEditCasePersonPuns fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+                                    
+                                    <div class="text-zinc-300 relative w-full max-w-xl md:max-w-2xl h-full md:h-auto z-50">
+                                        <div class="relative rounded shadow bg-zinc-800">
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Protokoll
+                                                </h3>
+                                                <button type="button" class="closeEditCasePersonPuns text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+                                    
+                                            <div class="px-6 py-4 space-y-4">
+                                                <div>
+                                                    <label for="protocolRole" class="block text-sm font-medium text-zinc-300">Roll</label>
+                                                    <input maxlength="155" id="protocolRole" value="" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10 text-zinc-300 placeholder-zinc-500">
+                                                </div>
+
+                                                <div class="flex w-full">
+                                                    <div class="flex w-1/4">
+                                                        <input disabled id="fineSelected" type="number" class="bg-zinc-900 border border-zinc-700 text-zinc-300 rounded-l px-1 h-10 w-full placeholder-zinc-500" placeholder="0">
+                                                    
+                                                        <div class="flex items-center rounded-r px-0.5 h-10 bg-zinc-900 border border-zinc-700">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-300 w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex w-1/4">
+                                                        <input disabled id="jailSelected" type="number" class="ml-1 bg-zinc-900 border border-zinc-700 text-zinc-300 rounded-l px-1 h-10 w-full placeholder-zinc-500" placeholder="0">
+                                                    
+                                                        <div class="flex items-center rounded-r px-0.5 h-10 bg-zinc-900 border border-zinc-700">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-300 w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex w-1/4">
+                                                        <input id="reductionSelected" min="0" max="70" type="number" class="appearance-none ml-1 bg-zinc-900 border border-zinc-700 text-zinc-300 rounded-l px-1 h-10 w-full placeholder-zinc-500" placeholder="0">
+                                                    
+                                                        <div class="flex items-center rounded-r px-0.5 h-10 bg-zinc-900 border border-zinc-700">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-300 w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex w-1/4">
+                                                        <select id="guiltSelected" class="text-sm appearance-none ml-1 bg-zinc-900 border border-zinc-700 text-zinc-300 rounded-l px-1 h-10 w-full placeholder-zinc-500">
+                                                            <option value="no_guilty" selected>Ei tunnista süüd</option>
+                                                            <option value="guilty">Tunnistab süüd</option>
+                                                        </select>
+                                                    
+                                                        <div class="flex items-center rounded-r px-0.5 h-10 bg-zinc-900 border border-zinc-700">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-300 w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 0 1 3.15 0V15M6.9 7.575a1.575 1.575 0 1 0-3.15 0v8.175a6.75 6.75 0 0 0 6.75 6.75h2.018a5.25 5.25 0 0 0 3.712-1.538l1.732-1.732a5.25 5.25 0 0 0 1.538-3.712l.003-2.024a.668.668 0 0 1 .198-.471 1.575 1.575 0 1 0-2.228-2.228 3.818 3.818 0 0 0-1.12 2.687M6.9 7.575V12m6.27 4.318A4.49 4.49 0 0 1 16.35 15m.002 0h-.002" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button id="confirmPunishment" class="text-white bg-red-700 hover:bg-red-800 shadow rounded py-2 px-2 w-full">Rakenda karistus</button>
+
+                                                <div class="h-64">
+                                                    <label class="block text-sm font-medium text-zinc-300">Vali karistus</label>
+                                                    <input @keyup="searchPunishment" id="punishmentSearch" type="text" class="appearance-none bg-zinc-900 border border-zinc-700 text-zinc-300 rounded px-2 h-10 w-full placeholder-zinc-500" placeholder="Otsi karistust..." onkeyup="searchPunishment()">
+                                              
+                                                    <div id="punishmentList" class="grid grid-cols-2 gap-2 mt-2 max-h-48 overflow-y-auto"></div>
+
+                                                    <script>
+                                                        function searchPunishment() {
+                                                            var input, filter, table, i, txtValue;
+                                                            input = document.getElementById("punishmentSearch");
+                                                            filter = input.value.toUpperCase();
+                                                            table = document.getElementById("punishmentList");
+                                
+                                                            for (i = 0; i < table.children.length; i++) {
+                                                                child = table.children[i];
+                                
+                                                                if (child) {
+                                                                    txtValue = child.textContent || child.innerText;
+                                
+                                                                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                                                        child.style.display = "";
+                                                                    } else {
+                                                                        child.style.display = "none";
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </script>
+                                                </div>
+                                            </div>
+
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="protocolSaveData" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeEditCasePersonPuns w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div x-show="page === 'officers'" class="bg-zinc-900 shadow overflow-hidden border border-zinc-700 rounded">
+                                <div class="w-full px-4 py-5">
+                                    <h3 class="text font-medium text-white">Seotud ametnikud</h3>
+                                    <p class="mt-1 text-sm text-zinc-400 text-center">Juhtumi lahendamisel võtmerollis olevad politseiametnikud.</p>
+                                </div>
+                
+                                <div class="border-t border-zinc-700">
+                                    <dl>
+                                        <div class="bg-zinc-900 px-4 py-5 grid grid-cols-5 gap-4">
+                                            <dt class="text-sm font-medium text-zinc-400">Kutsung</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Nimi</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Auaste</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Roll</dt>
+                                        </div>
+
+                                        <div id="policeCaseOfficersTable"></div>
+                                    </dl>
+                                </div>
+
+                                <div 
+                                    id="editCaseOfficer" 
+                                    class="text-zinc-300 fixed inset-0 hidden items-center justify-center overflow-y-auto overflow-x-hidden z-50" 
+                                    x-transition:enter="ease-out duration-300" 
+                                    x-transition:enter-start="opacity-0" 
+                                    x-transition:enter-end="opacity-100" 
+                                    x-transition:leave="ease-in duration-200" 
+                                    x-transition:leave-start="opacity-100" 
+                                    x-transition:leave-end="opacity-0"
+                                >
+                                    <div class="closeEditCaseOfficer fixed inset-0 transform transition-all z-50" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
+                                    </div>
+                                    
+                                    <div class="text-zinc-300 relative w-full max-w-xl md:max-w-2xl h-full md:h-auto z-50">
+                                        <div class="relative rounded shadow bg-zinc-800">
+                                            <div class="flex justify-between items-start p-4 rounded-t border-b border-zinc-700">
+                                                <h3 class="text-xl font-semibold text-white">
+                                                    Ametniku info
+                                                </h3>
+                                                <button type="button" class="closeEditCaseOfficer text-white bg-transparent hover:bg-zinc-700 rounded text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="defaultModal">
+                                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+                                    
+                                            <div class="px-6 py-4 space-y-4">
+                                                <div>
+                                                    <label for="officerProfileRole" class="block text-sm font-medium text-zinc-300">Roll</label>
+                                                    <input maxlength="55" id="officerProfileRole" value="" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10 text-zinc-300 placeholder-zinc-500">
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="md:flex md:justify-start p-6 rounded-b border-t border-zinc-700 gap-1">
+                                                <button id="officerSaveData" class="w-full mb-1 md:w-1/2 px-2 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded" name="submit">Kinnita</button>
+                                                <button class="closeEditCaseOfficer w-full mb-1 md:w-1/2 px-2 py-2 hover:bg-zinc-700 text-white border border-zinc-700 rounded" name="submit">Katkesta</button>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </div>
+
+<!-- HTML -->
+                            <div x-show="page === 'vehicles'" class="bg-zinc-900 shadow overflow-hidden border border-zinc-700 rounded">
+                                <div class="w-full px-4 py-5">
+                                    <h3 class="text font-medium text-white">Seotud sõidukid</h3>
+                                    <p class="mt-1 text-sm text-zinc-400 text-center">Nimekiri juhtumiga seotud sõidukitest.</p>
+                                </div>
+
+                                <div class="border-t border-zinc-700">
+                                    <dl class="flex items-center px-2 py-1 divide-x-2 divide-zinc-700">
+                                        <input id="confiscatedVehicleName" type="text" placeholder="Sõiduki roll" class="h-10 shadow bg-zinc-800 text-zinc-300 px-2 py-2 w-full flex-1 rounded-l">
+                                        <input id="confiscatedVehiclePlate" type="text" placeholder="Sõiduki REG.NR" class="h-10 shadow bg-zinc-800 text-zinc-300 px-2 py-2 w-64">
+                                        <button id="addVehicleItem" class="h-10 shadow bg-green-600 text-white px-2 py-2 hover:bg-green-500 rounded-r">Lisa sõiduk</button>
+                                    </dl>
+
+                                    <dl>
+                                        <div class="bg-zinc-900 px-4 py-5 grid grid-cols-4 gap-4 border-t border-zinc-700">
+                                            <dt class="text-sm font-medium text-zinc-400">Roll</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">REG.NR</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Ametnik</dt>
+                                            <dt class="text-sm font-medium text-zinc-400"></dt>
+                                        </div>
+
+                                        <div id="policeCaseConfiscatedVehiclesTable"></div>
+                                    </dl>
+                                </div>
+                            </div>
+
+
+                            <div x-show="page === 'confiscated_items'" class="bg-zinc-900 shadow overflow-hidden border border-zinc-700 rounded">
+                                <div class="w-full px-4 py-5">
+                                    <h3 class="text font-medium text-white">Konfiskeeritud esemed</h3>
+                                    <p class="mt-1 text-sm text-zinc-400 text-center">Nimekiri juhtumiga seotud konfiskeeritud esemetest.</p>
+                                </div>
+                            
+                                <div class="border-t border-zinc-700">
+                                    <dl class="flex items-center px-2 py-1 divide-x-2 divide-zinc-700">
+                                        <input id="confiscatedItemName" type="text" placeholder="Eseme nimetus" class="h-10 shadow bg-zinc-800 text-zinc-300 px-2 py-2 w-full flex-1 rounded-l">
+                                        <input id="confiscatedItemAmount" type="number" min="1" placeholder="Kogus" class="h-10 shadow bg-zinc-800 text-zinc-300 px-2 py-2 w-24">
+
+                                        <select id="policeCaseItemPersons" class="h-10 shadow bg-zinc-800 text-zinc-400 px-2 py-2 w-full flex-1"></select>
+
+                                        <button id="addConfiscatedItem" class="h-10 shadow bg-green-600 text-white px-2 py-2 hover:bg-green-500 rounded-r">Lisa ese</button>
+                                    </dl>
+
+                                    <dl>
+                                        <div class="bg-zinc-900 px-4 py-5 grid grid-cols-5 gap-4 border-t border-zinc-700">
+                                            <dt class="text-sm font-medium text-zinc-400">Ese</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Kogus</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Isik</dt>
+                                            <dt class="text-sm font-medium text-zinc-400">Konfiskeerija</dt>
+                                            <dt class="text-sm font-medium text-zinc-400"></dt>
+                                        </div>
+
+                                        <div id="policeCaseConfiscatedItemsTable"></div>
+                                    </dl>
+                                </div>
+                            </div>                                     
+                        </div>
+
+                        <footer class="bg-zinc-900 border rounded shadow border-zinc-700 mt-10 py-4">
+                            <div class="container mx-auto text-center text-zinc-400">
+                                Juhtumi looja: <span id="policeCaseCreatorName">Liam M.</span> | Viimati redigeeris: <span id="policeCaseEditorName"></span>, <span id="policeCaseLastEdit">25. august 2024 kell 17:51</span>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+
+                <div 
+                    x-show="activePage === 'vehicles'" 
+                    class="text-center ml-4 mr-4 h-full flex gap-1" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >   
+                    <div id="vehicleData" class="flex gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Sõidukid</h1>
+
+                                <input id="vehicleSearch" class="ml-4 bg-transparent border-b w-full focus-none" placeholder="...">
+                            </div>
+
+                            <div id="vehicleProfileList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between items-center mb-2">
+                                <h1 class="text-xl font-medium">Info</h1>
+
+                                <svg id="vehicleRefresh" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 cursor-pointer">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                            </div>
+
+                            <div class="h-full">
+                                <div class="flex gap-1 w-full mb-1">
+
+                                    <div class="content w-full">
+                                        <div class="text-xs">Mudel</div>
+                                        <div id="vehicleModel" class="font-bold border-b border-zinc-300">‎</div>
+                                        <div class="text-xs">Numbrimärk</div>
+                                        <div id="vehiclePlate" class="font-bold border-b border-zinc-300">‎</div>
+                                        <div class="text-xs">Omanik</div>
+                                        <div id="vehicleOwner" class="font-bold border-b border-zinc-300 cursor-pointer">‎</div>
+                                        <div class="text-xs">Tagaotsitav</div>
+                                        <div id="vehicleWanted" class="font-bold border-b border-zinc-300"><span class="text-green-500">EI</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%] overflow-y-auto">
+                            <div id="vehWantedContainer" class="mb-2">
+                                <div class="flex justify-between mb-1">
+                                    <h1 class="text-xl font-medium">Tagaotsitavus</h1>
+
+                                    <button id="saveWantedVehicle" class="px-2.5 py-1.5 text-xs font-medium rounded shadow text-white bg-green-600 hover:bg-green-700">Salvesta</button>
+                                </div>
+
+                                <textarea id="vehicleWantedReason" maxlength="535" placeholder="..." class="bg-zinc-800 border border-zinc-700 shadow rounded block p-2 w-full h-32 text-sm resize-none mt-1"></textarea>
+                            </div>
+
+                            <div x-data="{ open: false }" id="impLogsContainer" class="mb-2 hidden">
+                                <div class="flex justify-between">
+                                    <h1 class="text-xl font-medium">Teisaldused</h1>
+                            
+                                    <button @click="open = !open" class="cursor-pointer mt-auto mb-auto">
+                                        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                            
+                                        <svg x-show="open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+        
+                                <div x-show="open" id="impoundLogs" class="mt-2"></div>
+                            </div>
+
+                            <div x-data="{ open: false }" id="vehiclePunishmentsContainer" class="mb-2 hidden">
+                                <div class="flex justify-between">
+                                    <h1 class="text-xl font-medium">Seotud juhtumid</h1>
+                            
+                                    <button @click="open = !open" class="cursor-pointer mt-auto mb-auto">
+                                        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                            
+                                        <svg x-show="open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+        
+                                <div x-show="open" id="vehiclePunishments" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div 
+                    x-show="activePage === 'staff'" 
+                    class="text-center ml-4 mr-4 h-full flex gap-1" 
+                    x-transition:enter="transition ease-out duration-500" 
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                >   
+                    <div id="departmentData" class="flex gap-1 w-full h-full">
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Struktuurüksused</h1>
+                            </div>
+
+                            <div id="departmentList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div class="mb-1">
+                                <div id="header" class="flex justify-between mb-2">
+                                    <h1 class="text-xl font-medium">Struktuurüksuse info</h1>
+                                </div>
+
+                                <div class="flex gap-1 w-full mb-1">
+                                    <div class="content w-full">
+                                        <div class="text-xs">Nimi (Department of Police)</div>
+                                        <input type="text" id="departmentName" class="font-bold border-b border-zinc-300 bg-transparent w-full">
+
+                                        <div class="text-xs">Erivärv <span class="text-yellow-300 underline">https://docs.fivem.net/docs/game-references/blips/</span></div>
+                                        <input type="number" id="departmentColor" class="font-bold border-b border-zinc-300 bg-transparent w-full">
+
+                                        <div class="text-xs">Ametimärk <span class="text-yellow-300 underline">https://i.gyazo.com/*******.png</span></div>
+                                        <input id="departmentImage" class="font-bold border-b border-zinc-300 bg-transparent w-full">
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-1">
+                                    <button id="saveDepartment" class="w-full bg-green-700 hover:bg-green-800 rounded shadow text-white py-1.5">Salvesta</button>
+                                    <button id="deleteDepartment" class="w-full bg-red-700 hover:bg-red-800 rounded shadow text-white py-1.5">Kustuta</button>
+                                </div>
+                            </div>
+
+                            <div class="">
+                                <div id="header" class="flex justify-between mb-2">
+                                    <h1 class="text-xl font-medium">Liikme info</h1>
+                                </div>
+                                
+                                <div class="flex gap-1 w-full mb-1">
+                                    <div class="content w-full">
+                                        <div class="text-xs">Nimi</div>
+                                        <div id="workerName" class="font-bold border-b border-zinc-300">‎</div>
+
+                                        <div class="text-xs">Struktuurüksus</div>
+                                        <select id="workerDepartments" class="font-bold border-b border-zinc-300 bg-transparent w-full">
+
+                                        </select>
+
+                                        <div class="text-xs">Kutsung</div>
+                                        <input id="workerCallsign" type="number" class="font-bold border-b border-zinc-300 bg-transparent w-full">
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col w-full mb-1">
+                                    <div class="text-xs">Sertifikaadid</div>
+
+                                    <div 
+                                        id="certificateList" 
+                                        class="gap-1"
+                                    ></div>
+                                </div>
+
+                                <div x-data="{ open: false }" id="casesPollar" class="mb-1 hidden">
+                                    <div class="flex justify-between">
+                                        <h1 class="text-xl font-medium">Seotud juhtumid</h1>
+                                
+                                        <button @click="open = !open" class="cursor-pointer mt-auto mb-auto">
+                                            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                
+                                            <svg x-show="open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                            </svg>
+                                        </button>
+                                    </div>
+            
+                                    <div x-show="open" id="copCases" class="mt-2 overflow-y-auto max-h-[80px]"></div>
+                                </div>
+
+                                <div class="flex gap-1">
+                                    <button id="saveWorkerProfile" class="w-full bg-green-700 hover:bg-green-800 rounded shadow text-white py-1.5">Salvesta</button>
+                                    <button id="buyBadge" class="w-full bg-sky-700 hover:bg-sky-800 rounded shadow text-white py-1.5">Telli ametitõend</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block border border-zinc-700 bg-zinc-900 px-3 py-3 my-4 rounded shadow text-left gap-1 text-zinc-300 w-1/3 h-[95%]">
+                            <div id="header" class="flex justify-between mb-2">
+                                <h1 class="text-xl font-medium">Liikmed</h1>
+                                <input id="departmentProfileSearch" class="ml-4 bg-transparent border-b w-full focus-none" placeholder="...">
+                            </div>
+
+                            <div id="departmentMemberList" class="overflow-y-auto h-[580px]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <img src="nui://kk-mdt/cdn/frame.png" alt="tablet" class="tablet-frame" style="pointer-events: none; position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:89.5rem;height:45.5rem"/>
+    </div>
+</body>
+</html>

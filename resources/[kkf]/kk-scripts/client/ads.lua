@@ -1,0 +1,36 @@
+-- RegisterCommand('reklaam', function(source, args) 
+--     if args[1] then
+--         lib.callback('kk-ads:postAdd', false, function(response)
+--             if response then
+--                 TriggerEvent('KKF.UI.ShowNotification', 'success', 'Reklaam postitatud.')
+--             else
+--                 TriggerEvent('KKF.UI.ShowNotification', 'error', 'Teil ei ole piisavalt raha.')
+--             end
+--         end, 'personal', table.concat(args, " "))
+--     else
+--         TriggerEvent('KKF.UI.ShowNotification', 'error', 'Sisestage sisu reklaami loomiseks.')
+--     end
+-- end)
+
+-- RegisterCommand('jobad', function(source, args) 
+--     if args[1] then
+--         lib.callback('kk-ads:postAdd', false, function(response)
+--             if response then
+--                 TriggerEvent('KKF.UI.ShowNotification', 'success', 'Reklaam postitatud.')
+--             else
+--                 TriggerEvent('KKF.UI.ShowNotification', 'error', 'Teie fraktsioon ei oma piisavalt raha või teil pole selleks õigusi.')
+--             end
+--         end, 'job', table.concat(args, " "))
+--     else
+--         TriggerEvent('KKF.UI.ShowNotification', 'error', 'Sisestage sisu reklaami loomiseks.')
+--     end
+-- end)
+
+-- TriggerEvent('chat:addSuggestion', '/reklaam', 'Loo reklaam asjade reklaamimiseks.', {
+--    { name="sisu" }
+-- })
+
+-- TriggerEvent('chat:addSuggestion', '/jobad', 'Loo reklaam tööasjade asjade reklaamimiseks.', {
+--    { name="sisu" }
+-- }) 
+------ ADS POLE VAJA /announce

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <title>KKasutaja TABLET</title>
+
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        #loader {
+            display:none;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			border: 3px solid #E5E7EB;
+			border-color: #E5E7EB transparent #E5E7EB transparent;
+			animation: loader 1.2s linear infinite;
+        }
+
+        @keyframes loader {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="hidden">
+    <div 
+        id="container" 
+        style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+        x-data="{chosenApp: 'home'}"
+    >
+        <div id="hovering" class="absolute h-12 w-full -mt-10"></div>
+        
+        <div 
+            class="h-full w-full overflow-hidden bg-zinc-800"
+        >
+            <div 
+                x-show="chosenApp === 'home'" 
+                class="py-4 px-6 justify-start flex gap-8 h-[95%] text-zinc-200"
+                x-transition:enter="transition ease-out duration-500" 
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100 transform scale-100"
+            >
+                <div id="foodApp" @click="chosenApp = 'food'; functions.loadFoodApp()" class="hidden h-20 text-center cursor-pointer">
+                    <img src="img/icons/food.png" class="h-16 w-16 ml-auto mr-auto">
+
+                    <p class="text-sm mt-1">Droppy</p>
+                </div>
+
+                <div id="boostingApp" @click="chosenApp = 'boosting'; functions.loadBoostApp()" class="hidden h-20 text-center cursor-pointer">
+                    <img src="img/icons/boosting.png" class="h-16 w-16 ml-auto mr-auto">
+
+                    <p class="text-sm mt-1">Boosting</p>
+                </div>
+                
+                <div id="sellingApp" @click="chosenApp = 'selling'; functions.loadSellingApp()" class=" h-20 text-center cursor-pointer">
+                    <img src="img/icons/selling.png" class="h-16 w-16 ml-auto mr-auto">
+
+                    <p class="text-sm mt-1">Esemete müük</p>
+                </div>
+            </div>
+
+            <div 
+                x-show="chosenApp === 'food'" 
+                class="p-4 flex gap-1 w-full h-[95%] text-zinc-200"
+                x-transition:enter="transition ease-out duration-500" 
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100 transform scale-100"
+            >
+                <div id="contractList" class="p-2 w-1/3 overflow-y-auto rounded shadow bg-zinc-900 border border-zinc-700"></div>
+
+                <div class="p-2 w-1/3 rounded shadow bg-zinc-900 border border-zinc-700">
+                    <h4 id="noFoodInfo" class="text-center font-medium uppercase">Ühtegi tellimust ei ole veel valitud!</h4>
+
+                    <div id="foodInfo" class="hidden">
+                        <div class="flex justify-between mb-1">
+                            <h1 class="text-center font-medium uppercase">Tellimuse sisu</h1>
+    
+                            <div class="flex">
+                                <svg id="foodJobWaypoint" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hover:animate-pulse cursor-pointer w-6 h-6 hidden">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                </svg>
+        
+                                <svg id="foodJobAccept" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hover:animate-pulse cursor-pointer w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </div>
+                        </div>
+    
+                        <div id="foodInfoItems" class="grid grid-cols-2 gap-1 mb-1">
+                        </div>
+    
+                        <button id="foodJobCancel" class="hidden shadow rounded w-full bg-red-800 hover:bg-red-900 h-8">
+                            Katkesta tööots
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-2 w-1/3 rounded shadow bg-zinc-900 border border-zinc-700">
+                    <button id="foodJobQueueToggle" class="w-full uppercase font-medium text-sm align-middle text-center rounded py-1.5 px-2 text-zinc-200 bg-green-700 hover:bg-green-800 mb-1">Alusta tööotsade saamist</button>
+
+                    <h1 class="text-center font-medium uppercase">Statistika</h1>
+
+                    <div class="flex gap-1 w-full mb-1">
+                        <div class="bg-zinc-800 w-1/2 border border-zinc-700 shadow rounded block px-2 py-1.5">
+                            Lõpetatud tööotsi: <span id="foodJobsCompleted">1000</span>
+                        </div>
+
+                        <div class="bg-zinc-800 w-1/2 border border-zinc-700 shadow rounded block px-2 py-1.5">
+                            Raha teenitud: $<span id="foodJobsEarned">1000</span>
+                        </div>
+                    </div>
+
+                    <h1 class="text-center font-medium uppercase">Top vedajad</h1>
+
+                    <div id="foodJobTop" class="w-full mb-1"></div>
+                </div>
+            </div>
+
+            <div 
+                x-show="chosenApp === 'boosting'" 
+                class="p-4 flex gap-1 w-full h-[95%] text-zinc-200"
+                x-transition:enter="transition ease-out duration-500" 
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100 transform scale-100"
+            >
+                <div id="boostingList" class="p-2 w-1/3 overflow-y-auto rounded shadow bg-zinc-900 border border-zinc-700"></div>
+
+                <div class="p-2 w-1/3 rounded shadow bg-zinc-900 border border-zinc-700">
+                    <h4 id="noBoostInfo" class=" text-center font-medium uppercase">Ühtegi lepingut ei ole veel valitud!</h4>
+
+                    <div id="boostInfo" class="hidden bg-zinc-800 border border-zinc-700 shadow rounded block px-2 py-1.5 mb-1">
+                        <div id="header" class="w-full flex gap-1 mb-1">
+                            <div class="w-1/2 text-sm">
+                                <div class="flex">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                    </svg>
+                                      
+                                    <p class="ml-0.5 mb-auto mt-auto">Mudel: <span id="boostingModel">Pounder</span></p>
+                                </div>
+
+                                <div class="flex">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
+                                    </svg>
+                                      
+                                    <p class="ml-0.5 mb-auto mt-auto">Numbrimärk: <span id="boostingPlate">213</span></p>
+                                </div>
+
+                                <div id="boostingTimeLeft" class="flex">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+        
+                                    <p class="ml-0.5 mb-auto mt-auto">Aega jäänud: <span id="boostingTimeRemaining">11:00</span></p>
+                                </div> 
+        
+                                <div class="flex">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+        
+                                    <p id="boostingEarning" class="ml-0.5 mb-auto mt-auto">Hind: $100</span></p>
+                                </div> 
+                            </div>
+
+                            <img id="boostingImage" class="w-1/2 border border-zinc-700 shadow rounded" src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg">
+                        </div>
+
+                        <div class="flex w-full gap-1 mb-1">
+                            <button id="acceptBoostingContract" class="w-1/2 bg-green-700 hover:bg-green-800 py-1 rounded shadow">
+                                Võta vastu
+                            </button>
+
+                            <button id="declineBoostingContract" class="w-1/2 bg-red-700 hover:bg-red-800 py-1 rounded shadow">
+                                Keeldu lepingust
+                            </button>
+                        </div>
+
+                        <button id="sellBoostingContract" class="w-full bg-sky-700 hover:bg-sky-800 py-1 rounded shadow mb-1">
+                            Müü leping
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-2 w-1/3 rounded shadow bg-zinc-900 border border-zinc-700">
+                    <button id="boostingQueueToggle" class="w-full uppercase font-medium text-sm align-middle text-center rounded py-1.5 px-2 text-zinc-200 bg-green-700 hover:bg-green-800 mb-1">Alusta tööotsade saamist</button>
+
+                    <h1 class="text-center font-medium uppercase">Statistika</h1>
+
+                    <div class="flex justify-between mb-1">
+                        <span class="text-small" id="boostingCurrentClass">C</span>
+                        <span class="text-small" id="boostingNextClass">B</span>
+                    </div>
+
+                    <div class="flex gap-1 w-full mb-1">
+                        <div class="bg-zinc-800 w-1/2 border border-zinc-700 shadow rounded block px-2 py-1.5">
+                            Lõpetatud tööotsi: <span id="boostContractsCompleted">1000</span>
+                        </div>
+
+                        <div class="bg-zinc-800 w-1/2 border border-zinc-700 shadow rounded block px-2 py-1.5">
+                            Raha teenitud: $<span id="boostEarned">1000</span>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+
+            <div 
+                x-show="chosenApp === 'selling'" 
+                class="p-4 flex gap-1 w-full h-[95%] text-zinc-200"
+                x-transition:enter="transition ease-out duration-500" 
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100 transform scale-100"
+            >
+                <div class="p-2 w-full h-min rounded shadow bg-zinc-900 border border-zinc-700">
+                    <button id="sellItemsJobQueueToggle" class="w-full uppercase font-medium text-sm align-middle text-center rounded py-1.5 px-2 text-zinc-200 bg-green-700 hover:bg-green-800 mb-1">Alusta tööotsade saamist</button>
+
+                    <h1 class="text-center font-medium uppercase">Statistika</h1>
+
+                    <div class="flex gap-1 w-full mb-1">
+                        <div class="bg-zinc-800 w-1/2 border border-zinc-700 shadow rounded block px-2 py-1.5">
+                            Lõpetatud tööotsi: <span id="sellItemsJobsCompleted">1000</span>
+                        </div>
+
+                        <div class="bg-zinc-800 w-1/2 border border-zinc-700 shadow rounded block px-2 py-1.5">
+                            Raha teenitud: $<span id="sellItemsJobsEarned">1000</span>
+                        </div>
+                    </div>
+
+                    <h1 class="text-center font-medium uppercase">Kuller</h1>
+                    
+                    <div class="flex gap-1 w-full h-[468px] text-zinc-200">
+                        <div id="contractListSelling" class="p-2 w-1/3 overflow-y-auto rounded shadow bg-zinc-800 border border-zinc-700"></div>
+
+                        <div class="p-2 w-2/3 rounded shadow bg-zinc-800 border border-zinc-700">
+                            <h4 id="noSellingContrInfo" class="text-center font-medium uppercase">Ühtegi tellimust ei ole veel valitud!</h4>
+        
+                            <div id="SellingContrInfo" class="hidden">
+                                <div class="flex justify-between mb-1">
+                                    <h1 class="text-center font-medium uppercase">Tellimuse sisu</h1>
+            
+                                    <div class="flex">
+                                        <svg id="SellingContrJobWaypoint" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hover:animate-pulse cursor-pointer w-6 h-6 hidden">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                        </svg>
+                
+                                        <svg id="SellingContrJobAccept" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hover:animate-pulse cursor-pointer w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </div>
+                                </div>
+            
+                                <div id="SellingContrInfoItems" class="grid grid-cols-2 gap-1 mb-1">
+                                </div>
+            
+                                <button id="SellingContrJobCancel" class="hidden shadow rounded w-full bg-red-800 hover:bg-red-900 h-8">
+                                    Katkesta tööots
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 bg-zinc-900 bg-opacity-80 h-11 w-full text-zinc-200 border-t border-zinc-700 shadow">
+            <div class="flex justify-between px-3">
+                <div class="py-1.5 flex">
+                    <svg id="closeTablet" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 cursor-pointer">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+
+                    <svg x-on:click="chosenApp = 'home'" x-show="chosenApp != 'home'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 cursor-pointer">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </div>
+
+                <div class="flex px-2">
+                    <div id="loader" class="mt-auto mb-auto mr-2.5"></div>
+
+                    <div class="block text-sm text-center py-0.5">
+                        <p id="time">20:17</p>
+                        <p id="date">26/11/2022</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <img src="nui://kk-core/web/cdn/frame.png" alt="tablet" class="tablet-frame" style="pointer-events: none; position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:89.5rem;height:45.5rem"/>
+</body>
+</html>

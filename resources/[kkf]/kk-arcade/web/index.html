@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <title>KKasutaja Arcade</title>
+</head>
+<body class="hidden">
+    <div 
+        id="container"
+		class="bg-zinc-900"
+        style="position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:85rem;height:42rem"
+    >
+		<iframe id="gameScreen" src="" frameborder="0" scrolling="no" class="h-full w-full"></iframe>
+		<button id="closeGame" type="button" class="absolute left-4 bottom-3 text-white bg-red-700 hover:bg-red-800 font-medium rounded text-sm inline-flex items-center px-5 py-2.5 text-center shadow">Lõpeta mäng</button>
+    </div>
+
+    <img src="nui://kk-core/web/cdn/frame.png" alt="tablet" class="tablet-frame" style="pointer-events: none; position: absolute; margin: 0 auto; left: 50%; transform: translate(-50%, -50%); top: 40vh; width:89.5rem;height:45.5rem"/>
+</body>
+</html>

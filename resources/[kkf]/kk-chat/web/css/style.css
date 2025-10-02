@@ -1,0 +1,45 @@
+@import url('https://use.fontawesome.com/releases/v5.6.3/css/all.css');
+
+::-webkit-scrollbar {
+	display:none;
+}
+
+.color-0 {
+	color: #ffffff;
+}
+
+.color-1 {
+	color: #ff4444;
+}
+
+.color-2 {
+	color: #99cc00;
+}
+
+.color-3 {
+	color: #ffbb33;
+}
+
+.color-4 {
+	color: #0099cc;
+}
+
+.color-5 {
+	color: #33b5e5;
+}
+
+.color-6 {
+	color: #aa66cc;
+}
+
+.color-8 {
+	color: #cc0000;
+}
+
+.color-9 {
+	color: #cc0068;
+}
+
+.chatBoxStyle {
+  background: linear-gradient(90deg, #1a1a1a, rgba(0, 0, 0, 0) 100%);
+}

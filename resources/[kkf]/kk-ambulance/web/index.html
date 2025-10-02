@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script src="main.js" type="text/javascript"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap');
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        select:focus, textarea:focus, input:focus{
+            outline: none;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        #deathscreen {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div 
+        id="candidation_document" 
+        class="hidden absolute w-2/6 bg-zinc-800 text-zinc-200 shadow p-2"
+        style="margin: 0 auto; margin-top: 5%; left: 50%; top: 20%; transform: translate(-50%, -50%);"
+    >
+        <div id="header" class="flex justify-center mb-4">
+            <p class="text-xl font-medium uppercase">Kandideerimisavaldus</p>
+        </div>
+
+        <div class="flex gap-1 mb-1">
+            <div class="w-1/2">
+                <div id="name" class="mb-1">
+                    <label for="category" class="text-sm font-medium">Nimi:</label>
+                    <input id="myName" value="" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10" disabled>
+                </div>
+
+                <div id="name" class="mb-1">
+                    <label for="category" class="text-sm font-medium">E-mail: <span class="text-xs text-zinc-400">Telefonis tehtav e-mail ei tohiks sisaldada kirjavahemärke ja sümboleid</span></label>
+                    <input maxlength="50" id="myEmail" value="" class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-full h-10">
+                </div>
+            </div>
+
+            <textarea maxlength="535" id="myCandidationText" placeholder="Motivatsioonikiri..." class="bg-zinc-900 border border-zinc-700 shadow text-sm rounded focus-none block p-2.5 w-1/2 resize-none"></textarea>
+        </div>
+
+        <button id="submit" class="bg-green-700 hover:bg-green-800 text-white p-2 w-full rounded shadow">Saada</button>
+    </div>
+
+    <div id="deathscreen" class="hidden w-screen h-screen overflow-hidden bg-gradient-to-b from-[rgba(0,0,0,0.50)] to-black text-zinc-200 select-none">
+        <div class="absolute bottom-3 left-0 right-0 mx-auto w-[30%] h-[33%] flex items-center justify-center flex-col">
+            <div class="relative flex items-center justify-center w-fit h-fit">
+                <img src="./img.png" alt="">
+                <svg xmlns="http://www.w3.org/2000/svg" width="31" height="36" viewBox="0 0 31 36" fill="none" class="absolute left-0 right-0 top-[33%] mx-auto opacity-80">
+                    <path d="M15.529 0C6.04979 0 -1.98684 9.38916 0.436145 18.6019C1.02587 20.8462 1.64746 22.9057 2.37038 24.7478C1.22602 26.0266 1.7205 28.4958 2.80936 29.6878C3.47714 30.4182 4.96917 31.6742 6.22094 32.1854C7.23353 32.0364 10.1957 31.8686 10.0124 35.0197C10.3558 35.1601 10.7153 35.2818 11.0859 35.392V34.146H11.5324V35.5147C12.1325 35.6684 12.7602 35.7876 13.4143 35.8672V34.146H13.8594V35.9111C14.4656 35.9687 15.0872 36 15.7256 36C15.731 36 15.7367 36 15.7421 36V34.1453H16.1879V35.9914C16.8231 35.9777 17.4461 35.9388 18.0455 35.8657V34.1453H18.4923V35.8013C19.115 35.7088 19.7129 35.5824 20.2823 35.419V34.146H20.728V35.2804C20.984 35.1954 21.2333 35.1058 21.4749 35.005C20.9769 31.0673 24.9345 31.7268 25.4967 31.8395C26.791 31.4028 28.4327 30.028 29.1428 29.2518C30.2753 28.0141 30.7701 25.389 29.4417 24.1625C29.397 24.1211 29.3451 24.0923 29.2982 24.052C29.7916 22.6084 30.2273 21.0272 30.6323 19.305C32.8089 10.0303 25.0079 0 15.529 0ZM11.8951 23.6189C10.2663 24.8054 8.49676 27.0918 6.32513 25.7652C4.15279 24.4386 4.10266 19.5696 5.37735 17.6375C6.47194 15.9768 12.7469 16.3786 13.5551 17.7721C14.3635 19.1653 13.5235 22.4323 11.8951 23.6189ZM17.6856 29.4689C17.4858 30.0733 16.2434 29.2781 15.6869 28.885C15.1312 29.2781 13.888 30.0737 13.6879 29.4689C13.4287 28.6859 15.0492 23.8046 15.2444 23.4104C15.3024 23.2931 15.3894 23.1926 15.4821 23.1196C15.5287 23.0425 15.5953 23.0119 15.6726 23.0195C15.678 23.0184 15.6819 23.0202 15.6873 23.0195C15.6923 23.0202 15.6966 23.0184 15.702 23.0195C15.7793 23.0119 15.8459 23.0429 15.8928 23.1199C15.9859 23.1923 16.0726 23.2927 16.1295 23.4104C16.3236 23.8043 17.9452 28.6862 17.6856 29.4689ZM25.4129 25.3768C23.3333 26.8452 21.4162 24.6816 19.7129 23.6081C18.0086 22.5346 16.9552 19.3295 17.6706 17.8848C18.3845 16.4408 24.6194 15.6197 25.8214 17.2026C27.2196 19.0458 27.491 23.9069 25.4129 25.3768Z" fill="url(#paint0_linear_2_6)"/>
+                    <defs>
+                        <linearGradient id="paint0_linear_2_6" x1="15.5" y1="0" x2="15.5" y2="36" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#6F6F6F" stop-opacity="0.75"/>
+                            <stop offset="0.609375" stop-color="#7E7979" stop-opacity="0.72"/>
+                            <stop offset="1" stop-color="#383232"/>
+                            <stop offset="1" stop-color="#797979"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="absolute w-fit h-fit flex items-center justify-center text-2xl top-[57%]">
+                <h4 class="text-shadow-md bg-clip-text text-transparent bg-gradient-to-r from-[#e0606fcb] via-[#E29EA6] to-[#e0606fa1]">Olete teadvuseta</h4>
+            </div>
+
+            <div id="timerText" class="absolute w-fit h-fit flex items-center justify-center text-sm text-[#52575c] top-[72%]"></div>
+
+            <div id="countdown" class="absolute bottom-0 left-0 right-0 mx-auto w-[50%] h-[18%] flex flex-row items-center justify-center gap-2">
+                <div class="w-[15%] h-full relative bg-gradient-to-b from-[#262626] to-[#1D1D1D] flex items-center justify-center text-zinc-400 text-lg overflow-hidden">
+                    <h4 id="minute_first">0</h4>
+                </div>
+                <div class="w-[15%] h-full relative bg-gradient-to-b from-[#262626] to-[#1D1D1D] flex items-center justify-center text-zinc-400 text-lg overflow-hidden">
+                    <h4 id="minute_second">0</h4>
+                </div>
+                <div class="w-[5%] h-full relative bg-transparent flex items-center justify-center text-lg overflow-hidden">
+                    <h4>:</h4>
+                </div>
+                <div class="w-[15%] h-full relative bg-gradient-to-b from-[#262626] to-[#1D1D1D] flex items-center justify-center text-zinc-400 text-lg overflow-hidden">
+                    <h4 id="second_first">0</h4>
+                </div>
+                <div class="w-[15%] h-full relative bg-gradient-to-b from-[#262626] to-[#1D1D1D] flex items-center justify-center text-zinc-400 text-lg overflow-hidden">
+                    <h4 id="second_second">0</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

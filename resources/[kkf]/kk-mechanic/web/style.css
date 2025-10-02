@@ -1,0 +1,48 @@
+.overflow-auto::-webkit-scrollbar {
+    display: block;
+}
+
+::-webkit-scrollbar {
+    width: 1px;
+    border-radius: 0.25rem
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #374151;
+    border-radius: 0.25rem
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #111827;
+    border-radius: 0.25rem
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #0d1525;
+    border-radius: 0.25rem
+}
+
+#loadBar {
+    display: none;
+    width: 24px;
+    height: 24px;
+    margin: 8px;
+    margin-top: 12px;
+    border-radius: 50%;
+    border: 3px solid #E5E7EB;
+    border-color: #E5E7EB transparent #E5E7EB transparent;
+    animation: loadBar 1.2s linear infinite;
+}
+
+@keyframes loadBar {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

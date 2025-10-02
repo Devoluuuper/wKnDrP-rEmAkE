@@ -1,0 +1,6 @@
+CREATE TABLE user_droppy (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    identifier VARCHAR(50) NOT NULL UNIQUE, -- Player's unique identifier (e.g., SteamID or other unique ID)
+    done INT DEFAULT 0,                     -- Number of completed tasks
+    earned INT DEFAULT 0                    -- Total earnings
+);

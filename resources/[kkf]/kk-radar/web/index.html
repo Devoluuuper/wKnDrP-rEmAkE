@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth select-none">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" />
+
+    <script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+    <script src="nui://kk-core/web/cdn/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <style>
+        html, body {margin: 0; height: 100%; overflow: hidden}
+
+        @font-face {
+            font-family: "DigitalNumbers";
+            src: url( "DigitalNumbers-Regular.woff" );
+        }
+
+        .font {
+            font-family: "DigitalNumbers";
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
+    <title>KKasutaja Radar</title>
+</head>
+<body>
+    <div id="radarContainer" class="hidden absolute m-auto right-5 bottom-10 w-[550px] h-[200px]">
+        <div class="bg-zinc-800 border-2 border-zinc-700 rounded shadow p-6 rounded shadow">
+            <div class="grid grid-cols-4 gap-4 text-center text-white">
+                <div class="col-span-2">
+                    <div class="flex gap-1">
+                        <div class="w-full p-1 bg-zinc-900 border border-zinc-700 rounded shadow itemContainer">
+                            <div class="flex justify-between items-center mb-2">
+                                <span id="fwd_same" class="text-yellow-600 text-xs font-bold">SAME</span>
+                                <span id="fwd_opp" class="text-yellow-600 text-xs font-bold">OPP</span>
+                                <span id="fwd_xmit" class="text-yellow-600 text-xs font-bold">XMIT</span>
+                            </div>
+        
+                            <div class="flex gap-1 justify-center text-4xl text-2xl" data-target="fwdspeed">
+                                <p class="speedNumber text-green-500 font-bold font text-2xl">0</p>
+                                <p class="speedNumber text-green-500 font-bold font text-2xl">9</p>
+                                <p class="speedNumber text-green-500 font-bold font text-2xl">6</p>
+                            </div>
+                        </div>
+    
+                        <div class="flex flex-col justify-center">
+                            <svg id="fwd_arrow_front" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-700 size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                            </svg>
+    
+                            <svg id="fwd_arrow_back" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-700 size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>  
+                        </div>
+        
+                        <div class="w-full p-1 bg-zinc-900 border border-zinc-700 rounded shadow itemContainer">
+                            <div class="flex justify-between items-center mb-2">
+                                <span id="fwd_lock" class="text-zinc-500 text-xs font-bold">LOCK</span>
+                                <span id="fwd_lock_fast" class="text-zinc-500 text-xs font-bold">FAST</span>
+                            </div>
+        
+                            <div class="flex gap-1 justify-center text-4xl" data-target="fwdfast">
+                                <p class="speedNumber text-red-500 font-bold font text-2xl">0</p>
+                                <p class="speedNumber text-red-500 font-bold font text-2xl">9</p>
+                                <p class="speedNumber text-red-500 font-bold font text-2xl">6</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="flex-1 border-t border-zinc-700"></div>
+                        <span class="text-base font-semibold whitespace-nowrap">EES</span>
+                        <div class="flex-1 border-t border-zinc-700"></div>
+                    </div>
+                </div>
+    
+                <div class="col-span-2">
+                    <div class="flex gap-1">
+                        <div class="w-full p-1 bg-zinc-900 border border-zinc-700 rounded shadow itemContainer">
+                            <div class="flex justify-between items-center mb-2">
+                                <span id="bwd_same" class="text-yellow-600 text-xs font-bold">SAME</span>
+                                <span id="bwd_opp" class="text-yellow-600 text-xs font-bold">OPP</span>
+                                <span id="bwd_xmit" class="text-yellow-600 text-xs font-bold">XMIT</span>
+                            </div>
+        
+                            <div class="flex gap-1 justify-center text-4xl" data-target="bwdspeed">
+                                <p class="speedNumber text-green-500 font-bold font text-2xl">0</p>
+                                <p class="speedNumber text-green-500 font-bold font text-2xl">0</p>
+                                <p class="speedNumber text-green-500 font-bold font text-2xl">0</p>
+                            </div>
+                        </div>
+        
+                        <div class="flex flex-col justify-center">
+                            <svg id="bwd_arrow_front" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-700 size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                            </svg>
+    
+                            <svg id="bwd_arrow_back" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-zinc-700 size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>  
+                        </div>
+    
+                        <div class="w-full p-1 bg-zinc-900 border border-zinc-700 rounded shadow itemContainer">
+                            <div class="flex justify-between items-center mb-2">
+                                <span id="bwd_lock" class="text-zinc-500 text-xs font-bold">LOCK</span>
+                                <span id="bwd_lock_fast" class="text-zinc-500 text-xs font-bold">FAST</span>
+                            </div>
+        
+                            <div class="flex gap-1 justify-center text-4xl" data-target="bwdfast">
+                                <p class="speedNumber text-red-500 font-bold font text-2xl">0</p>
+                                <p class="speedNumber text-red-500 font-bold font text-2xl">0</p>
+                                <p class="speedNumber text-red-500 font-bold font text-2xl">0</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="flex-1 border-t border-zinc-700"></div>
+                        <span class="text-base font-semibold whitespace-nowrap">TAGA</span>
+                        <div class="flex-1 border-t border-zinc-700"></div>
+                    </div>
+                </div>
+    
+                <div class="col-span-2 flex gap-5">
+                    <div class="flex flex-col justify-between">
+                        <div class="relative inline-block">
+                            <img src="plate.png" class="w-full h-auto shadow">
+    
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="plate_front" class="text-xl font-bold text-sky-800"></span>
+                            </div>
+                        </div>
+    
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="flex-1 border-t border-zinc-700"></div>
+                            <span class="text-base font-semibold whitespace-nowrap">EES</span>
+                            <div class="flex-1 border-t border-zinc-700"></div>
+                        </div>
+                    </div>
+    
+                    <div class="flex flex-col justify-between">
+                        <div class="relative inline-block">
+                            <img src="plate.png" class="w-full h-auto shadow">
+    
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="plate_back" class="text-xl font-bold text-sky-800"></span>
+                            </div>
+                        </div>
+    
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="flex-1 border-t border-zinc-700"></div>
+                            <span class="text-base font-semibold whitespace-nowrap">TAGA</span>
+                            <div class="flex-1 border-t border-zinc-700"></div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="flex flex-col justify-between col-span-2">
+                    <div class="p-1 bg-zinc-900 border border-zinc-700 rounded shadow itemContainer">
+                        <div class="flex gap-1 justify-center text-4xl" data-target="patrolspeed">
+                            <p class="speedNumber text-green-500 font-bold font text-2xl">0</p>
+                            <p class="speedNumber text-green-500 font-bold font text-2xl">6</p>
+                            <p class="speedNumber text-green-500 font-bold font text-2xl">3</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="flex-1 border-t border-zinc-700"></div>
+                        <span class="text-base font-semibold whitespace-nowrap">PATRULL</span>
+                        <div class="flex-1 border-t border-zinc-700"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="controllerContainer" class="hidden absolute m-auto left-1/2 top-[150px] w-[550px] h-[200px]" style="transform: translate(-50%, -50%);">
+        <div class="p-4 bg-zinc-800 border border-zinc-700 shadow text-white rounded">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold">Radariseaded</h2>
+                <button class="text-red-500" data-action="close">Sulge</button>
+            </div>
+
+            <button class="w-full shadow bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded mb-2" data-action="radar_toggle">Lüliti</button>
+            
+            <div class="flex items-center justify-between mb-2">
+                <label>Eesmine antenn</label>
+
+                <div class="flex gap-1">
+                    <button class="shadow bg-sky-500 hover:bg-sky-600 text-white px-2 py-1 rounded" data-action="radar_frontopp">OPP</button>
+                    <button class="shadow bg-sky-500 hover:bg-sky-600 text-white px-2 py-1 rounded" data-action="radar_frontxmit">XMIT</button>
+                    <button class="shadow bg-sky-500 hover:bg-sky-600 text-white px-2 py-1 rounded" data-action="radar_frontsame">SAME</button>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between mb-2">
+                <label>Tagumine antenn</label>
+
+                <div class="flex gap-1">
+                    <button class="shadow bg-sky-500 hover:bg-sky-600 text-white px-2 py-1 rounded" data-action="radar_rearopp">OPP</button>
+                    <button class="shadow bg-sky-500 hover:bg-sky-600 text-white px-2 py-1 rounded" data-action="radar_rearxmit">XMIT</button>
+                    <button class="shadow bg-sky-500 hover:bg-sky-600 text-white px-2 py-1 rounded" data-action="radar_rearsame">SAME</button>
+                </div>
+            </div>
+
+            <div class="flex-1 border-t border-zinc-700"></div>
+    
+            <div class="mt-1 mb-2">
+                <h3 class="font-medium mb-2">Muu</h3>
+
+                <div class="flex items-center justify-between mb-2">
+                    <label>Suurim lubatud sõidukiirus</label>
+                    <input id="fastLimit" type="number" class="border border-zinc-700 shadow bg-zinc-900 text-center text-white px-2 py-1 rounded outline-none focus:outline-none active:outline-none hover:outline-none" value="60"/>
+                </div>
+
+                <div class="flex items-center justify-between mb-2">
+                    <label>Lukustuse teatis</label>
+
+                    <button class="shadow bg-zinc-500 hover:bg-zinc-600 text-white px-2 py-1 rounded" data-action="radar_lockbeep">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 m-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

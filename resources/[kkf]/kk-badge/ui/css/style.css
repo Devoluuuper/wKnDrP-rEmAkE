@@ -1,0 +1,65 @@
+body,html {
+    font-family: 'Montserrat', sans-serif;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase;
+    color: #9e9e9e00;
+    font-size: 12px;
+}
+
+#id-card {
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    width: 485px;
+    height: 383px;
+    padding: 54px 17px 10px 144px;
+    background: url("../images/lspd.png");
+}
+
+.img {
+    position: absolute;
+    left: 4.45rem;
+    top: 2.8rem;
+    z-index: -1;
+}
+
+.img-container {
+    height: 8.7rem;
+    width: 8rem;
+    background-image: url('https://i.imgur.com/5XSYaab.png');
+    background-size: cover;
+    background-position: center;
+}
+
+#name {
+    font-weight: bolder;
+    font-size: 18px;
+    text-transform: none;
+    color: #000000;
+}
+
+#rank {
+    font-weight: bolder;
+}
+
+#serial {
+    font-weight: bolder;
+}
+
+.data {
+    padding-top: 2.5rem;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 9rem;
+    width: 13rem;
+    top: 48%;
+    left: 5.7%;
+}

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" class="select-none scroll-smooth focus:outline-none tap-highlight-transparent overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="style.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="nui://kk-core/web/cdn/alpine.min.js"></script>
+
+    <script src="script.js"></script>
+
+    <title>Kasutaja HUD</title>
+</head>
+<body 
+    x-data="hud"
+    x-init="init()"
+    x-show="mapStatus"
+>
+    <div 
+        x-transition
+        x-show="hudActive"
+        class="absolute flex gap-3 bottom-2 left-5"
+    >
+        <!-- Olemasolevad hexagonid -->
+        <div x-show="radioActive" class="hexagon-container text-white">
+            <div 
+                class="hexagon flex items-center justify-center shadow"
+                :class="radioTalking ? 'bg-red-500/60' : 'bg-gray-300/60'"
+            >
+                <div class="icon">
+                    <i class="fa-solid fa-walkie-talkie"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner"
+                        :class="radioTalking ? 'bg-red-400' : 'bg-gray-200'"
+                        :style="{ height: `35px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hexagon-container text-white">
+            <div 
+                class="hexagon flex items-center justify-center shadow"
+                :class="microphoneActive && !radioTalking ? 'bg-yellow-600/60' : 'bg-gray-300/60'"
+            >
+                <div class="icon">
+                    <i class="fa-solid fa-microphone"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner"
+                        :class="microphoneActive && !radioTalking ? 'bg-yellow-500' : 'bg-gray-200'"
+                        :style="{ height: `${microphoneHeight}px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div 
+            x-show="healthHeight < 35"
+            class="hexagon-container text-white"
+            x-transition
+        >
+            <div class="hexagon flex items-center justify-center shadow bg-green-600/60">
+                <div class="icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner bg-green-500" 
+                        :style="{ height: `${healthHeight}px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div 
+            x-show="armorHeight > 1" 
+            class="hexagon-container text-white"
+            x-transition
+        >
+            <div class="hexagon flex items-center justify-center shadow bg-blue-600/60">
+                <div class="icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner bg-blue-500" 
+                        :style="{ height: `${armorHeight}px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div 
+            x-show="foodHeight < 34"
+            class="hexagon-container text-white"
+            x-transition
+        >
+            <div class="hexagon flex items-center justify-center shadow bg-orange-500/60">
+                <div class="icon">
+                    <i class="fa-solid fa-burger"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner bg-orange-400" 
+                        :style="{ height: `${foodHeight}px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            x-show="thirstHeight < 34"
+            class="hexagon-container text-white"
+            x-transition
+        >
+            <div class="hexagon flex items-center justify-center shadow bg-teal-600/60">
+                <div class="icon">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner bg-teal-500" 
+                        :style="{ height: `${thirstHeight}px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div 
+            x-show="stressHeight > 1" 
+            class="hexagon-container text-white"
+            x-transition
+        >
+            <div class="hexagon flex items-center justify-center shadow bg-red-600/60">
+                <div class="icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner bg-red-500" 
+                        :style="{ height: `${stressHeight}px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div 
+            x-show="oxygenHeight < 34" 
+            class="hexagon-container text-white"
+            x-transition
+        >
+            <div class="hexagon flex items-center justify-center shadow bg-blue-900/60">
+                <div class="icon">
+                    <i class="fa-solid fa-lungs"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner bg-blue-800" 
+                        :style="{ height: `${oxygenHeight}px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div 
+            x-show="adminMode" 
+            class="hexagon-container text-white"
+            x-transition
+        >
+            <div class="hexagon flex items-center justify-center shadow bg-zinc-900/60">
+                <div class="icon">
+                    <i class="fa-solid fa-terminal"></i>
+                </div>
+
+                <div class="small-hexagon">
+                    <div 
+                        class="inherit shadow-inner bg-zinc-800" 
+                        :style="{ height: `35px` }"
+                    ></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div 
+        x-transition
+        x-show="carActive"
+        class="absolute responsive_car"
+    >
+        <div class="flex items-center gap-4 mb-4">
+            <div id="gear" class="flex flex-col items-center bg-[#D5AC0F] px-2 py-1 rounded shadow">
+                <div class="text-white text-2xl">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+
+                <span x-text="currentGear" class="text-white font-semibold text">1</span>
+            </div>
+            
+            <div id="speed" class="flex flex-col font-mono text-white">
+                <span class="flex gap-0 text-6xl font-bold -mb-2">
+                    <span 
+                        x-text="currentSpeed[0] !== null && currentSpeed[0] !== undefined ? currentSpeed[0] : 0" 
+                        class="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+                        :class="currentSpeed[0] ? 'text-white' : 'text-zinc-400'"
+                    >
+                        0
+                    </span>
+
+                    <span 
+                        x-text="currentSpeed[1] !== null && currentSpeed[1] !== undefined ? currentSpeed[1] : 0" 
+                        class="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+                        :class="currentSpeed[1] || currentSpeed[0] ? 'text-white' : 'text-zinc-400'"
+                    >
+                        0
+                    </span>
+                    
+                    <span 
+                        x-text="currentSpeed[2] !== null && currentSpeed[2] !== undefined ? currentSpeed[2] : 0" 
+                        class="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+                        :class="currentSpeed[2] == 0 && currentSpeed[0] == 0 && currentSpeed[1] == 0 ? 'text-zinc-400' : (currentSpeed[2] !== null && currentSpeed[2] !== undefined ? 'text-white' : (currentSpeed[1] ? 'text-white' : 'text-zinc-400'))"
+                    >
+                        0
+                    </span>
+                </span>
+                <div class="flex items-center justify-between text-zinc-400 font-bold text-right drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                    <span class="mr-2">MPH</span>
+
+                    <div class="flex items-center gap-1">
+                        <i 
+                            x-transition 
+                            x-show="cruiseActive" 
+                            class="fa-solid fa-gauge text-[#D5AC0F] text-sm"
+                        ></i>
+                        <i 
+                            x-transition 
+                            x-show="!seatbelt" 
+                            class="fa-solid fa-user-large-slash text-red-600 text-sm"
+                        ></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <i 
+                class="fa-solid fa-gas-pump text-xl"
+                :class="{
+                    'text-white': fuelWidth > 30,
+                    'text-yellow-500': fuelWidth <= 30 && fuelWidth > 15,
+                    'text-red-500': fuelWidth <= 15
+                }"
+            ></i>
+    
+            <div id="progress-bar" class="w-full h-2 bg-zinc-500 overflow-hidden">
+                <div 
+                    id="progress" 
+                    class="h-full" 
+                    :class="{
+                        'bg-white': fuelWidth > 30,
+                        'bg-yellow-500': fuelWidth <= 30 && fuelWidth > 15,
+                        'bg-red-500': fuelWidth <= 15
+                    }"
+                    :style="{ width: `${fuelWidth}%` }">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div
+        x-transition
+        x-show="compassActive"
+        class="absolute flex justify-center w-full"
+    >
+        <div class="absolute w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[16px] border-t-[#D5AC0F] z-10"></div>
+
+        <div id="compass" class="gap-2 flex justify-evenly rounded-md text-white w-2/4 h-8 bg-[radial-gradient(circle,_rgba(0,0,0,0.6)_0%,_rgba(0,0,0,0.4)_40%,_rgba(0,0,0,0)_100%)]">
+            <div x-text="street" class="text-right w-full text-[#D5AC0F] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"></div>
+            
+            <div class="overflow-hidden w-[900px] h-[35px]">
+                <div 
+                    class="bg-[center_center] bg-[400px] bg-repeat-x h-full w-[800%]" 
+                    style="background-image: url('compass.png'); transition: transform 0.5s ease"
+                    :style="{ transform: `translate3d(${heading}px, 0, 0)` }"
+                ></div>
+            </div>
+
+            <div x-text="zone" class="text-left w-full text-[#D5AC0F] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">Wicket St</div>
+        </div>
+    </div>
+
+    <div
+        x-transition
+        x-show="instructionsActive"
+        class="absolute flex items-center w-full h-full"
+    >
+        <div class="ml-5">
+            <div 
+                x-text="instructionHeader" 
+                class="text-xl text-center w-full text-[#D5AC0F] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+                style="text-stroke: 0.3px #808080; -webkit-text-stroke: 0.5px #808080;"
+            >
+                PEALKIRI
+            </div>
+
+            <div class="border-b-4 border-[#D5AC0F] mb-2 mt-1 w-full shadow"></div>
+
+            <div 
+                x-text="instructionDescription" 
+                class="text-center text-[#D5AC0F] px-10 py-3 bg-[#1A1A1A]/90 w-64 rounded-md shadow-lg shadow-[#00000080]"
+            >
+                Nüüd liigu järgmisse punkti!
+            </div>
+        </div>
+    </div>
+
+    <div
+        x-transition
+        x-show="instructionsPopUP"
+        class="absolute flex items-center justify-center w-full h-full"
+    >
+        <div 
+            class="flex flex-col items-start px-10 py-6 bg-[#1A1A1A]/90 w-[27rem] h-[17rem] rounded-md shadow-lg shadow-[#00000080] border-2 border-[#D5AC0F]"
+        >
+            <div 
+                x-text="instructionPopUPHeader" 
+                class="text-lg text-left text-[#D5AC0F] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] mb-3"
+                style="text-stroke: 0.5px #808080; -webkit-text-stroke: 0.5px #808080;"
+            >
+                PEALKIRI
+            </div>
+
+            <div class="border-b-2 border-[#D5AC0F] w-full mb-3"></div>
+
+            <div 
+                x-text="instructionPopUPDescription" 
+                class="text-left text-[#D5AC0F] text-base"
+            >
+                Nüüd liigu järgmisse punkti!
+            </div>
+        </div>
+    </div>
+
+    <div
+        x-transition
+        x-show="interactActive"
+        class="absolute flex items-end justify-center w-full h-full"
+    >
+        <div class="flex flex-col md:flex-row gap-2 mb-2">
+            <div 
+                x-show="interactKey != ''" 
+                x-text="interactKey" 
+                class="text-white font-semibold px-4 rounded-md py-2 bg-[#D5AC0F]/90 shadow"
+            ></div>
+
+            <div 
+                x-text="interactText" 
+                class="text-white font-semibold rounded-md px-4 py-2 bg-[#1A1A1A]/90 shadow"
+            ></div>
+        </div>
+    </div>
+<div
+    x-transition
+    x-show="notifications.length > 0"
+    class="absolute flex items-end justify-center w-full h-full p-4"
+>
+    <div 
+        class="space-y-2 w-full max-w-sm mx-auto"
+        :class="{
+            'mb-10': interactActive,
+            'mb-2': !interactActive
+        }"
+    >
+        <template x-for="(value, index) in notifications" :key="value.id">
+            <div 
+                class="rounded-md flex items-center border-b-4 bg-[#1A1A1A]/90 text-sm font-medium px-4 py-3"
+                :class="{
+                    'border-red-500': value.type === 'error',
+                    'border-sky-500': value.type === 'info',
+                    'border-green-500': value.type === 'success',
+                }"
+            >
+                <!-- Ikonid -->
+                <svg 
+                    x-show="value.type === 'error'" 
+                    class="w-6 h-6 mr-2 text-red-500"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 11-12.728 0 9 9 0 0112.728 0zM12 9v4m0 4h.01"></path>
+                </svg>
+
+                <svg 
+                    x-show="value.type === 'info'" 
+                    class="w-6 h-6 mr-2 text-sky-500"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path>
+                </svg>
+
+                <svg 
+                    x-show="value.type === 'success'" 
+                    class="w-6 h-6 mr-2 text-green-500"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+
+                <!-- Tekst -->
+                <p 
+                    x-text="value.message" 
+                    class="ml-2 text-sm font-semibold"
+                    :class="{
+                        'text-red-500': value.type === 'error',
+                        'text-sky-500': value.type === 'info',
+                        'text-green-500': value.type === 'success'
+                    }"
+                ></p>
+            </div>
+        </template>
+    </div>
+</div>
+</body>
+</html>

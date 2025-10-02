@@ -1,0 +1,1 @@
+C:\server\FXServer.exe +exec C:\server\server-files\fivem-server\server.cfg  +set onesync on +set sv_enforceGameBuild 2612

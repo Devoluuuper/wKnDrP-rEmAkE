@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth focus:outline-none tap-highlight-transparent overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="script.js"></script>
+
+    <title>Kasutaja DOJ</title>
+
+    <style>
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #3F3F46;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #1e1e1f;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #141414;
+        }
+
+        .transition-fade {
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body 
+    class="text-white w-screen h-screen flex justify-center items-center"
+    x-data="doj"
+    x-init="init()"
+    @keydown.window="handleKeydown($event)"
+>
+    <div 
+        x-show="showMenu" 
+        class="bg-zinc-900 p-8 shadow rounded text-gray-300" 
+        style="width: 629px; max-width: 100%; display: flex; flex-direction: column; justify-content: space-between;"
+    >
+        <h1 class="font-bold text-3xl text-center mb-6">Avalduse esitamine</h1>
+
+        <div class="flex-grow">
+            <!-- Step Navigation Buttons -->
+            <div class="flex gap-4 mb-8 justify-center">
+                <template x-for="step in [1, 2, 3]">
+                    <div 
+                        :class="['py-2 px-6 rounded-full font-semibold transition-colors', currentStep === step ? 'bg-sky-600 text-white' : 'bg-zinc-700 text-gray-400']"
+                    >
+                        <span x-text="step === 1 ? '1. Sinu andmed' : step === 2 ? '2. Kontaktid' : '3. Juhtum'"></span>
+                    </div>
+                </template>
+            </div>            
+
+            <!-- Step 1: Sinu Andmed -->
+            <div x-show="currentStep === 1" class="mb-6 transition-opacity duration-300" x-transition>
+                <h2 class="text font-semibold mb-4">Sinu andmed</h2>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block mb-2 font-medium" for="first-name">Eesnimi</label>
+                        <input disabled x-model="personFirstname" type="text" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white focus:ring focus:ring-sky-500">
+                    </div>
+                    <div>
+                        <label class="block mb-2 font-medium" for="last-name">Perekonnanimi</label>
+                        <input disabled x-model="personLastname" type="text" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white focus:ring focus:ring-sky-500">
+                    </div> 
+                    <div>
+                        <label class="block mb-2 font-medium" for="state-id">State ID</label>
+                        <input disabled x-model="personStateId" type="text" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white focus:ring focus:ring-sky-500">
+                    </div>
+                    <div>
+                        <label class="block mb-2 font-medium" for="dob">Sünnikuupäev</label>
+                        <input disabled x-model="personDateOfBirth" type="text" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white focus:ring focus:ring-sky-500">
+                    </div> 
+                </div>
+            </div>
+
+            <!-- Step 2: Kontaktid -->
+            <div x-show="currentStep === 2" class="mb-6 transition-opacity duration-300" x-transition>
+                <h2 class="text font-semibold mb-4">Sinu kontaktid</h2>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block mb-2 font-medium">E-post</label>
+                        <input type="email" x-model="personMail" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white focus:ring focus:ring-sky-500">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 font-medium" for="phone">Telefoninumber</label>
+                        <input x-model="personPhone" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white focus:ring focus:ring-sky-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Juhtum -->
+            <div x-show="currentStep === 3" class="mb-6 transition-opacity duration-300" x-transition>
+                <h2 class="text font-semibold mb-4">Mis juhtus?</h2>
+
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium" for="case">Juhtum</label>
+                    <select x-model="caseSelection" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white focus:ring focus:ring-sky-500">
+                        <option value="">Vali seotud juhtum</option>
+
+                        <template x-for="(value, index) in cases" :key="index">
+                            <option :value="value.id"><span x-text="value.title"></span>: <span x-text="value.role"></span> (<span x-text="formatDate(value.last_edit)"></span>)</option>
+                        </template>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-medium" for="description">Kirjelda juhtunut</label>
+                    <textarea id="description" x-model="incidentDescription" class="border border-zinc-700 bg-zinc-800 p-2 w-full rounded text-white h-32 focus:ring focus:ring-sky-500" placeholder="Kirjeldus..."></textarea>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="flex justify-between mt-6">
+                <button type="button" class="p-3 bg-gray-700 hover:bg-gray-800 text-white rounded" @click="currentStep--" :disabled="currentStep === 1">Eelmine</button>
+                <button type="button" class="p-3 bg-gray-700 hover:bg-gray-800 text-white rounded" @click="currentStep++" x-show="currentStep !== 3">Järgmine</button>
+                <button type="submit" class="p-3 bg-sky-700 hover:bg-sky-800 text-white rounded" x-show="currentStep === 3" @click="finishForm()">Esita teade</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
